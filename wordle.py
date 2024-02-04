@@ -1,3 +1,5 @@
+#AUTHOR: IZAAK WHITE
+#Proof of concept
 import random
 #import pygame
 

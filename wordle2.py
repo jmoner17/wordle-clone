@@ -1,3 +1,5 @@
+#AUTHOUR: IZAAK WHITE
+#THIS IS THE CURRENT FILE
 import random
 import pygame
 import sys

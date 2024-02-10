@@ -1,5 +1,6 @@
 #AUTHOUR: IZAAK WHITE
 #THIS IS THE CURRENT FILE
+
 import random
 import pygame
 import sys
@@ -7,7 +8,7 @@ import sys
 pygame.init()
 
 SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 400
+SCREEN_HEIGHT = 600  # Increased height
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
@@ -57,7 +58,7 @@ num_of_guesses = 0
 max_attempts = 6
 input_text = ""
 feedback_message = ""
-
+guess_list = []
 run = True
 while run:
     for event in pygame.event.get():
@@ -67,20 +68,11 @@ while run:
             if event.key == pygame.K_RETURN:
                 guess = input_text
                 feedback, num_of_guesses = processGuess(answer, guess, num_of_guesses)
+                feedback_message = feedback
+                if feedback == "*" * len(answer) or num_of_guesses >= max_attempts:
+                    run = False
 
-                if feedback == "*" * len(answer):
-                    draw_text("WIN!", WHITE, SCREEN_WIDTH // 2, 300)
-                    pygame.display.flip()
-                    pygame.time.wait(2000)
-                    run = False
-                else:
-                    feedback_message = "Feedback: {}".format(feedback)
-                    input_text = ""  # Clear the input box
-                if num_of_guesses >= max_attempts:
-                    draw_text("LOSE | {}".format(answer), WHITE, SCREEN_WIDTH // 2, 300)
-                    pygame.display.flip()
-                    pygame.time.wait(2000)
-                    run = False
+                input_text = ""  # Clear the input box
 
             elif event.key == pygame.K_BACKSPACE:
                 input_text = input_text[:-1]
@@ -92,8 +84,9 @@ while run:
     draw_text("Wordle Game", WHITE, SCREEN_WIDTH // 2, 50)
     draw_text("Attempts left: {}".format(max_attempts - num_of_guesses), WHITE, SCREEN_WIDTH // 2, 100)
 
-    draw_text("Type a 5-letter word: {}".format(input_text), WHITE, SCREEN_WIDTH // 2, 200)
-    draw_text(feedback_message, WHITE, SCREEN_WIDTH // 2, 250)
+    draw_text("Type a {}-letter word:".format(len(answer)), WHITE, SCREEN_WIDTH // 2, SCREEN_HEIGHT - 400)
+    draw_text(input_text, WHITE, SCREEN_WIDTH // 2, SCREEN_HEIGHT - 350 + num_of_guesses*30)
+    draw_text(feedback_message, WHITE, SCREEN_WIDTH // 2, SCREEN_HEIGHT - 300 + num_of_guesses * 30)  # Adjusted position
 
     pygame.display.flip()
 

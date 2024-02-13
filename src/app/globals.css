@@ -61,9 +61,6 @@
 
 .dark {
   --light-bg-color-rgba: rgba(74, 85, 104, 0.7);
-  --image-src: url('/minecraft-background-dark.jpg');
-  --sub-image-src: url('/dark-sub-bg.png');
-
   --skeleton-color-1: rgba(255, 255, 255, 0);
   --skeleton-color-2: rgba(255, 255, 255, 0.2);
 

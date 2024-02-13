@@ -9,44 +9,69 @@ import LetterBox from "@/components/LetterBox"
 
 export default function Home() {
 
+  const ROW_SIZE = 6;
+  const LETTER_SIZE = 5;
+  const target = "FUNNY";
+
   //const router = useRouter();
 
-  const [letter, setLetter] = useState(['', '', '', '', '']);
+  const [letter, setLetter] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
+  const [row, setRow] = useState(0);
   const [error, setError] = useState(['']);
-  const refLetter = useRef([]);
+  const [feedback, setFeedback] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('none')));
 
-  refLetter.current = letter.map((_, i) => refLetter.current[i] ?? React.createRef());
+  const refRow = useRef(letter.map(row => row.map(() => React.createRef())));
+
 
   useEffect(() => {
     const keyPressHandler = (e) => {
 
-      if(e.key.match(/^[a-zA-Z]$/) && e.key.length === 1) {
-        const nextIndex = letter.findIndex(letter => letter === '');
+      if(e.key.match(/^[a-zA-Z]$/) && e.key.length === 1 && row < ROW_SIZE) {
+        const nextIndex = letter[row].findIndex(letter => letter === '');
         if(nextIndex >= 0) {
           const newLetter = [...letter];
-          newLetter[nextIndex] = e.key.toUpperCase();
+          newLetter[row][nextIndex] = e.key.toUpperCase();
           setLetter(newLetter);
           
-          if(nextIndex + 1 < letter.length) {
-            refLetter.current[nextIndex + 1].current.focus();
-          }
+          const nextFocusIndex = (nextIndex + 1 < LETTER_SIZE) ? nextIndex + 1 : nextIndex;
+          refRow.current[row][nextFocusIndex].current.focus();
         }
       }
-      else if(e.key === 'Backspace') {
-        let prevIndex = -1;
-        for (let i = letter.length - 1; i >= 0; --i) {
-          if (letter[i] !== '') {
-            prevIndex = i;
-            break;
-          }
-        }
+      else if(e.key === 'Backspace' && row < ROW_SIZE) {
+        let prevIndex = letter[row].findLastIndex(letter => letter !== '');
         if (prevIndex >= 0) {
           const newLetter = [...letter];
-          newLetter[prevIndex] = '';
+          newLetter[row][prevIndex] = '';
           setLetter(newLetter);
-          refLetter.current[prevIndex].current.focus();
+          refRow.current[row][prevIndex].current.focus();
         }
-      }
+      } else if(e.key === 'Enter' && row < ROW_SIZE - 1) {
+          const guess = letter[row].join('');
+          if(guess.length === LETTER_SIZE) {
+            const newFeedback = [...feedback];
+
+            for(let i = 0; i < LETTER_SIZE; ++i) {
+              if(target[i] === guess[i]) {
+                newFeedback[row][i] = 'correct';
+              }
+            }
+
+            for(let i = 0; i < LETTER_SIZE; ++i) {
+              if(newFeedback[row][i] !== 'correct') {
+                const indexOfTarget = target.indexOf(guess[i]);
+                if(indexOfTarget >= 0) {
+                  newFeedback[row][i] = 'present';
+                }
+              }
+            }
+            setFeedback(newFeedback);
+
+            if(!letter[row].includes('') && row < ROW_SIZE - 1) {
+              setRow(row + 1);
+              refRow.current[row + 1][0].current.focus();
+            }
+          }
+        }
     };
     
     document.addEventListener('keydown', keyPressHandler);
@@ -54,28 +79,25 @@ export default function Home() {
     return () => {
       document.removeEventListener('keydown', keyPressHandler);
     };
-  }, [letter]); 
-
-  const handleKeyboardInput = (value, i) => {
-    const newLetter = [...letter];
-    newLetter[i] = value.toUpperCase();
-    setLetter(newLetter);
-  };
+  }, [letter, row]); 
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <div className="flex items-center justify-center space-x-4">
-        {letter.map((letter, i) => (
-          <LetterBox
-            key={i}
-            ref={refLetter.current[i]}
-            letter={letter}
-            onChange={(e) => handleKeyboardInput(e.target.value, i)}
-            error={error}
-            index={i}
-          />
-        ))}
-      </div>
+      {letter.map((row, rowIndex) => (
+        <div key={rowIndex} className="flex items-center justify-center space-x-4 my-2">
+          {row.map((letter, letterIndex) => (
+            <LetterBox
+              key={letterIndex}
+              ref={refRow.current[rowIndex][letterIndex]}
+              letter={letter}
+              //onChange={(e) => {}}
+              error={error}
+              index={letterIndex}
+              feedback={feedback[rowIndex][letterIndex]}
+            />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

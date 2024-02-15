@@ -1,7 +1,5 @@
 'use client'
 
-import Image from "next/image";
-import { useRouter } from "next/navigation"
 import React, { useEffect, useState, useRef } from "react";
 
 import LetterBox from "@/components/LetterBox"
@@ -11,17 +9,28 @@ export default function Home() {
 
   const ROW_SIZE = 6;
   const LETTER_SIZE = 5;
-  const target = "FUNNY";
-
-  //const router = useRouter();
 
   const [letter, setLetter] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
+  const [target, setTarget] = useState('FUNNY');
   const [row, setRow] = useState(0);
   const [error, setError] = useState(['']);
-  const [feedback, setFeedback] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('none')));
+  const [feedback, setFeedback] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
 
   const refRow = useRef(letter.map(row => row.map(() => React.createRef())));
 
+  /*
+  useEffect(() => { 
+    fetch('/api/randomword')
+    .then(res => res.json())
+    .then(data => {
+      setTarget(data.target);
+    })
+    .catch(error => console.error('Error fetching target word:', error));
+
+  }, []);
+  */
+
+  //will later setup supabase :(
 
   useEffect(() => {
     const keyPressHandler = (e) => {
@@ -53,17 +62,13 @@ export default function Home() {
             for(let i = 0; i < LETTER_SIZE; ++i) {
               if(target[i] === guess[i]) {
                 newFeedback[row][i] = 'correct';
+              } else if(target.indexOf(guess[i]) >= 0) {
+                newFeedback[row][i] = 'present';
+              } else {
+                newFeedback[row][i] = 'none';
               }
             }
 
-            for(let i = 0; i < LETTER_SIZE; ++i) {
-              if(newFeedback[row][i] !== 'correct') {
-                const indexOfTarget = target.indexOf(guess[i]);
-                if(indexOfTarget >= 0) {
-                  newFeedback[row][i] = 'present';
-                }
-              }
-            }
             setFeedback(newFeedback);
 
             if(!letter[row].includes('') && row < ROW_SIZE - 1) {
@@ -82,22 +87,23 @@ export default function Home() {
   }, [letter, row]); 
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      {letter.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex items-center justify-center space-x-4 my-2">
-          {row.map((letter, letterIndex) => (
-            <LetterBox
-              key={letterIndex}
-              ref={refRow.current[rowIndex][letterIndex]}
-              letter={letter}
-              //onChange={(e) => {}}
-              error={error}
-              index={letterIndex}
-              feedback={feedback[rowIndex][letterIndex]}
-            />
-          ))}
-        </div>
-      ))}
-    </div>
+    <main className="gradient-background min-h-screen">
+      <div className="flex flex-col items-center justify-center h-screen">
+        {letter.map((row, rowIndex) => (
+          <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
+            {row.map((letter, letterIndex) => (
+              <LetterBox
+                key={letterIndex}
+                ref={refRow.current[rowIndex][letterIndex]}
+                letter={letter}
+                error={error}
+                index={letterIndex}
+                feedback={feedback[rowIndex][letterIndex]}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+  </main>
   );
 }

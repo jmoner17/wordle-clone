@@ -52,6 +52,8 @@ module.exports = {
         'dark-accent': 'var(--dark-accent-color)',
         'primary': 'var(--primary-color)',
         'dark-primary': 'var(--dark-primary-color)',
+        'text-color': 'var(--text-color)',
+        'dark-text-color': 'var(--dark-text-color)',
       },
 
       keyframes: {

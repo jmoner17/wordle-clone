@@ -16,6 +16,7 @@ const LetterBox = React.forwardRef(({ letter, error, feedback}, ref) => {
     shadow = "shadow-yellow-500/50"
   } else if(feedback === 'none') {
     border = "border-0"
+    shadow = "shadow-lg"
   }
 
     return (

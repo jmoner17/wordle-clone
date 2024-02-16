@@ -101,10 +101,52 @@ export default function Home() {
     };
   }, [letter, row]); 
 
+  const InputComponent = ({ bgColor, placeholder }) => (
+    <input
+      type="text"
+      className={`bg-${bgColor}-500 placeholder-black dark:placeholder-white shadow-${bgColor}-500/50 w-12 h-12 text-center text-2xl shadow-lg rounded-md focus:outline-none`}
+      style={{ caretColor: "transparent"}}
+      placeholder={placeholder}
+    />
+  );
+
   return (
-    <main className="gradient-background min-h-screen">
-      <div className="flex flex-col items-center justify-center h-screen">
-        {letter.map((row, rowIndex) => (
+    <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center">
+      <div className="flex flex-col items-center justify-center h-full w-full">
+        <div className="container flex flex-col items-center justify-center h-full w-full mt-12 h-40">
+          <div className="flex items-center justify-center space-x-2 p-8 h-10">
+            <InputComponent bgColor="green" placeholder="W" />
+            <InputComponent bgColor="yellow" placeholder="O" />
+            <input
+              type="text"
+              className="placeholder-black dark:placeholder-white w-12 h-12 text-center text-2xl shadow-lg border-0 rounded-md focus:outline-none"
+              style={{ caretColor: "transparent" }}
+              placeholder="R"
+            />
+            <InputComponent bgColor="green" placeholder="D" />
+            <InputComponent bgColor="yellow" placeholder="L" />
+            <input
+              type="text"
+              className="placeholder-black dark:placeholder-white w-12 h-12 text-center text-2xl shadow-lg border-0 rounded-md focus:outline-none"
+              style={{ caretColor: "transparent" }}
+              placeholder="E"
+            />
+          </div>
+          <div className="flex items-center justify-center text-2xl space-x-2">
+            <p>M</p>
+            <p>A</p>
+            <p>X</p>
+            <p>X</p>
+            <p>E</p>
+            <p>R</p>
+            <p>S</p>
+          </div>
+          
+        </div>
+
+
+<div className="mb-32">
+{letter.map((row, rowIndex) => (
           <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
             {row.map((letter, letterIndex) => (
               <LetterBox
@@ -118,6 +160,7 @@ export default function Home() {
             ))}
           </div>
         ))}
+</div>
       </div>
   </main>
   );

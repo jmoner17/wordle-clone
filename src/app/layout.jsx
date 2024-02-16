@@ -1,4 +1,5 @@
 import './globals.css'
+import SupabaseProvider from '@/utils/supabase-provider'
 import Providers from '@/utils/providers'
 
 export const metadata = {
@@ -27,7 +28,7 @@ export default function RootLayout({ children }) {
       </head>
       <Providers>
         <body className="bg-primary dark:bg-dark-primary">
-          {children}
+          <SupabaseProvider>{children}</SupabaseProvider>
         </body>
       </Providers>
     </html>

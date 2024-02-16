@@ -1,36 +1,51 @@
 'use client'
 
 import React, { useEffect, useState, useRef } from "react";
-
+import { useUser } from "@/utils/useClient";
+import { useSupabase } from "@/utils/supabase-provider";
+import { useRouter } from 'next/navigation';
 import LetterBox from "@/components/LetterBox"
+import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
+import workPLS from "@/components/server"
 
 
 export default function Home() {
 
+  const { supabase } = useSupabase();
+
   const ROW_SIZE = 6;
   const LETTER_SIZE = 5;
 
+  //setup for a later date
+  const [loading, setLoading] = useState(true);
+
   const [letter, setLetter] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
-  const [target, setTarget] = useState('FUNNY');
   const [row, setRow] = useState(0);
+  const [target, setTarget] = useState(null);
   const [error, setError] = useState(['']);
   const [feedback, setFeedback] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
 
   const refRow = useRef(letter.map(row => row.map(() => React.createRef())));
 
-  /*
+  const randomId = Math.floor(Math.random() * (5749 - 1 + 1)) + 1;
+  
   useEffect(() => { 
-    fetch('/api/randomword')
-    .then(res => res.json())
-    .then(data => {
-      setTarget(data.target);
-    })
-    .catch(error => console.error('Error fetching target word:', error));
-
-  }, []);
-  */
-
-  //will later setup supabase :(
+    async function fetchData() {
+        setLoading(true);
+        const {data, error} = await supabase
+          .from("valid_words") 
+          .select("word")
+          .eq('id', `${randomId}`)
+          .single();
+        if(error) {
+          console.log("Uh oh!", error.message)
+        } else {
+          setTarget(data?.word.toString().toUpperCase());
+          console.log(workPLS);''
+        }
+    } 
+    fetchData();
+  }, [supabase]);
 
   useEffect(() => {
     const keyPressHandler = (e) => {

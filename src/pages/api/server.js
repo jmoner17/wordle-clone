@@ -2,30 +2,28 @@ import { createClient } from '@supabase/supabase-js'
 
 export default async function handler(req, res) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const supabase = createClient(supabaseUrl, supabaseKey)
 
+  /*
   try {
-    const { data, error } = await supabase
-      .from('valid_words')
-      .select('word')
-      .eq('id', `${randomId}`)
-      .single()
+    const { data, error } =  await supabase.rpc('randoRow')
 
     if (error) {
       console.log('Uh oh!', error.message)
     } else {
-      setTarget(data?.word.toString().toUpperCase())
-      console.log(workPLS)
+      //setTarget(data?.word.toString().toUpperCase())
+      //console.log(data?.word.toString().toUpperCase())
     }
 
-    res.status(200).json({ data })
+    return res.status(200).json({ data: data?.word.toString().toUpperCase() })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Something went wrong.' })
+    return res.status(500).json({ error: 'Something went wrong.' })
   }
 }
-
+*/
+}
 /*
 import { createClient } from '@supabase/supabase-js'
 

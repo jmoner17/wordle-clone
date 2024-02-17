@@ -8,7 +8,7 @@ export default function Index() {
 
   useEffect(() => {
     router.push('/home');
-  }, []);
+  }, [router]);
 
   return (
     <main className="w-full h-screen text-text-color dark:text-dark-text-color grid grid-cols-1 grid-rows-1 place-items-center bg-blend-hue">

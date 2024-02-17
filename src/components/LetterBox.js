@@ -27,7 +27,10 @@ const LetterBox = React.forwardRef(({ letter, error, feedback}, ref) => {
           readOnly
           maxLength="1"
           ref={ref}
-          className={`w-20 h-20 text-center text-4xl shadow-lg ${shadow} ${border} border-text-color dark:border-dark-text-color rounded-md focus:outline-none ${color}`}
+          className={`text-center shadow-lg ${shadow} ${border} border-text-color dark:border-dark-text-color rounded-md focus:outline-none ${color}
+          w-12 sm:w-16 md:w-20 
+          h-12 sm:h-16 md:h-20
+          text-2xl sm:text-3xl md:text-4xl`}
           style={{caretColor: "transparent"}}
         />
         {error && <p className="text-red-500">{error}</p>}

@@ -12,6 +12,7 @@ const fetchData = async () => {
 };
 */
 
+// todo: setup supabase edge functions to handle word data fetching
 const InputComponent = ({ bgColor, placeholder }) => (
   <input
     type="text"

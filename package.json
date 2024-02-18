@@ -1,0 +1,43 @@
+{
+  "name": "wordle-game",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^1.9.3",
+    "@supabase/auth-helpers-nextjs": "^0.8.7",
+    "@supabase/supabase-js": "^2.39.3",
+    "autoprefixer": "10.4.17",
+    "bufferutil": "^4.0.8",
+    "dompurify": "^3.0.8",
+    "draft-js": "^0.11.7",
+    "draft-js-export-html": "^1.4.1",
+    "encoding": "^0.1.13",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.0.4",
+    "next": "^14.0.4",
+    "next-themes": "^0.2.1",
+    "postcss": "^8.4.33",
+    "punycode.js": "^2.3.1",
+    "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dom": "^18.2.0",
+    "react-resizable": "^3.0.5",
+    "react-swipeable": "^7.0.1",
+    "react-transition-group": "^4.4.5",
+    "sharp": "^0.33.2",
+    "slate": "^0.101.5",
+    "slate-history": "^0.100.0",
+    "slate-react": "^0.101.5",
+    "tailwindcss": "3.4.1",
+    "utf-8-validate": "^6.0.3"
+  },
+  "devDependencies": {
+    "postcss-nesting": "^12.0.2"
+  }
+}

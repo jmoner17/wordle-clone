@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  next-app:
+    container_name: next-net1 #name for the docker file this is used by other continers for inter-container-communication
+    build:
+      context: ./ #defines the root file of your website. 
+      dockerfile: prod.Dockerfile #This is the dockerfile used to build and run your nextjs server
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: #put the url of the api endpoint here
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: # put the api endpoint hkey here
+    restart: unless-stopped #the containter will automatically restart itself after a filure unnless it is manually stopped
+    ports:
+      - 3000:3000 #define whatever port the contianer should bind to. just keep this at 3000 
+    netowrks:
+      - example-network # give access to the conatienr to communicate locally with other containers on the example-network
+
+networks:
+  example-netowrks: {} #intializes the network

@@ -121,38 +121,10 @@ const ClientComponent = ({ children }) => {
     };
   }, [letter, row, feedback, target]);
 
-  const InputComponent = ({ bgColor, placeholder }) => (
-    <input
-      type="text"
-      className={`bg-${bgColor}-500 placeholder-black dark:placeholder-white shadow-${bgColor}-500/50 text-center w-8 sm:w-10 md:w-12 h-8 sm:h-10 md:h-12 text-xl sm:text-2xl md:text-3xl space-x-0 sm:space-x-1 md:space-x-2 shadow-lg rounded-md focus:outline-none`}
-      style={{ caretColor: "transparent" }}
-      placeholder={placeholder}
-    />
-  );
   
   return (
     <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
-      <div className="flex flex-col items-center justify-center">
-        <div className="container flex flex-col items-center justify-center h-auto w-auto mt-12 p-8">
-          <div className="flex items-center justify-center space-x-1 sm:space-x-1.5 md:space-x-2">
-            <InputComponent bgColor="green" placeholder="W" />
-            <InputComponent bgColor="yellow" placeholder="O" />
-            <InputComponent bgColor="none" placeholder="R" />
-            <InputComponent bgColor="green" placeholder="D" />
-            <InputComponent bgColor="yellow" placeholder="L" />
-            <InputComponent bgColor="none" placeholder="E" />
-          </div>
-          <div className="flex items-center justify-center text-2xl sm:text-3xl md:text-4x space-x-1 sm:space-x-1.5 md:space-x-2">
-            <p>M</p>
-            <p>A</p>
-            <p>X</p>
-            <p>X</p>
-            <p>E</p>
-            <p>R</p>
-            <p>S</p>
-          </div>
-        </div>
-      </div>
+      <div>{children}</div>
   
       <div className="flex-grow-0 w-full justify-center">
         {letter.map((row, rowIndex) => (
@@ -170,7 +142,6 @@ const ClientComponent = ({ children }) => {
           </div>
         ))}
       </div>
-      <div>{children}</div>
     </main>
   );
 };

@@ -8,7 +8,7 @@ export default function Home () {
   //this is where you will put html function javascript stuff goes above
   return (
     <div>
-      
+      <h1>Hello, Next.js!</h1>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { useSupabase } from "@/utils/supabase-provider";
 import { useRouter } from 'next/navigation';
 import LetterBox from "@/components/LetterBox"
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
+import GameOver from "@/components/GameOver"
 //import workPLS from "@/pages/api/server"
 
 
@@ -27,26 +28,24 @@ const ClientComponent = ({ children }) => {
   const [feedback, setFeedback] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
 
   const refRow = useRef(letter.map(row => row.map(() => React.createRef())));
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [gameOverMessage, setGameOverMessage] = useState('');
+  const [nextIndex1, setNextIndex1] = useState(null);
+  const [validGuess, setValidGuess] = useState(false);
 
-  
-  /*
+  const resetGame = () => {
+    if (isGameOver === false) return;
+    else
+      setLetter(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
+    setRow(0);
+    setRandomId(Math.floor(Math.random() * (5749)) + 1);
+    setFeedback(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
+    setIsGameOver(false);
+    setError('');
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('@/components/server');
-        const data = await response.json();
-        console.log('Received uppercase word:', data.data);
-        // Assuming you have a state variable named 'target'
-        setTarget(data.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
-  */
-  useEffect(() => {
-    setRandomId(Math.floor(Math.random() * (5749 - 1 + 1)) + 1);
+    setRandomId(Math.floor(Math.random() * (5749)) + 1);
   }, []);
 
   useEffect(() => {
@@ -72,6 +71,7 @@ const ClientComponent = ({ children }) => {
 
       if (e.key.match(/^[a-zA-Z]$/) && e.key.length === 1 && row < ROW_SIZE) {
         const nextIndex = letter[row].findIndex(letter => letter === '');
+        setNextIndex1(nextIndex)
         if (nextIndex >= 0) {
           const newLetter = [...letter];
           newLetter[row][nextIndex] = e.key.toUpperCase();
@@ -89,27 +89,69 @@ const ClientComponent = ({ children }) => {
           setLetter(newLetter);
           refRow.current[row][prevIndex].current.focus();
         }
-      } else if (e.key === 'Enter' && row < ROW_SIZE - 1) {
+      }
+      else if (e.key === 'Enter' && isGameOver == false) {
         const guess = letter[row].join('');
-        if (guess.length === LETTER_SIZE) {
-          const newFeedback = [...feedback];
 
-          for (let i = 0; i < LETTER_SIZE; ++i) {
-            if (target[i] === guess[i]) {
-              newFeedback[row][i] = 'correct';
-            } else if (target.indexOf(guess[i]) >= 0) {
-              newFeedback[row][i] = 'present';
+        const isValidWord = async () => {
+          setLoading(true);
+          try {
+            const { data, error } = await supabase
+              .from("valid_words")
+              .select("word")
+              .eq('word', guess.toLowerCase())
+              .single();
+            setLoading(false);
+            if (error) {
+              setValidGuess(false);
+              return false;
             } else {
-              newFeedback[row][i] = 'none';
+              setValidGuess(true);
+              return true;
             }
+          } catch (error) {
+            setLoading(false);
+            console.error('Error validating word:', error);
+            return false;
           }
+        }
 
-          setFeedback(newFeedback);
+        if (nextIndex1 >= LETTER_SIZE - 1) {
+          isValidWord().then(isValid => {
+            if (isValid) {
+              if (guess.length === LETTER_SIZE) {
+                const newFeedback = [...feedback];
 
-          if (!letter[row].includes('') && row < ROW_SIZE - 1) {
-            setRow(row + 1);
-            refRow.current[row + 1][0].current.focus();
-          }
+                for (let i = 0; i < LETTER_SIZE; ++i) {
+                  if (target[i] === guess[i]) {
+                    newFeedback[row][i] = 'correct';
+                  } else if (target.indexOf(guess[i]) >= 0) {
+                    newFeedback[row][i] = 'present';
+                  } else {
+                    newFeedback[row][i] = 'none';
+                  }
+                }
+
+                setFeedback(newFeedback);
+
+                if (isGameOver == false) {
+                  if (target == guess) {
+                    setIsGameOver(true);
+                    setGameOverMessage("You're Winner!");
+                  } else if (row >= ROW_SIZE - 1 && target != guess) {
+                    setIsGameOver(true);
+                    setGameOverMessage("You're BAD!");
+                  }
+                }
+                if (!letter[row].includes('') && row < ROW_SIZE - 1) {
+                  setRow(row + 1);
+                  refRow.current[row + 1][0].current.focus();
+                }
+              }
+            } else {
+              return;
+            }
+          })
         }
       }
     };
@@ -119,13 +161,20 @@ const ClientComponent = ({ children }) => {
     return () => {
       document.removeEventListener('keydown', keyPressHandler);
     };
-  }, [letter, row, feedback, target]);
+  }, [letter, row, feedback, target, isGameOver, supabase, nextIndex1, validGuess]);
 
-  
+
   return (
     <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
       <div>{children}</div>
-  
+      {isGameOver && (
+        <GameOver
+          title="Game Over"
+          message={gameOverMessage}
+          show={isGameOver}
+          onClose={resetGame}
+        />
+      )}
       <div className="flex-grow-0 w-full justify-center">
         {letter.map((row, rowIndex) => (
           <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">

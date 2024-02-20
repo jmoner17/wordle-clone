@@ -1,5 +1,5 @@
-//import React, { useEffect, useState, useRef } from "react";
-//import { useSupabase } from "@/utils/supabase-provider";
+import React, { useEffect, useState, useRef } from "react";
+import { useSupabase } from "@/utils/supabase-provider";
 
 export default function Home () {
 

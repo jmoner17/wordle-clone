@@ -7,17 +7,29 @@ export default function Home () {
   const[num, setNum] = useState(0);
 
   //let theText = myTextInput.value;
-  useEffect(() => {
-    
-  }, [])
+  const handleClick = () => {
+    setNum(num + 1);
+  };
 
   //this is where you will put html function javascript stuff goes above
   return (
     <div>
-      <h1>Hello, Next.js!</h1>
+      <div style={{ textAlign: 'center', paddingTop: '20px' }}>
+        <h1>Wordle Clicker</h1>
+      </div>
         
-        <div>
-           <button onClick={} style={{marginTop: '180px', padding: '240px 240px', fontSize: '20px', cursor: 'pointer'}}>{int}</button>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+           <button 
+            onClick={handleClick} 
+            style={{
+              marginTop: '5px',
+              padding: '5px',
+              fontSize: '16px',
+              cursor: 'pointer',
+              border: '2px solid #900',
+            }}>
+              {num}
+          </button>
        </div>
     </div>
     

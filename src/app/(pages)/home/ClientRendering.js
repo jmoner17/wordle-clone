@@ -228,7 +228,7 @@ const ClientComponent = ({ children }) => {
                     setGameOverMessage("You're Winner!");
                   } else if (row >= ROW_SIZE - 1 && target != guess) {
                     setIsGameOver(true);
-                    setGameOverMessage("You're BAD!");
+                    setGameOverMessage("You're BAD! Word was: "+target);
                   }
                 }
                 if (!letter[row].includes('') && row < ROW_SIZE - 1) {

@@ -4,8 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useSupabase } from "@/utils/supabase-provider";
 
 export default function Home() {
-  const [num, setNum] = useState(0);
+  const [num, setNum] = useState(0.0);
   const [fallingLetters, setFallingLetters] = useState([]);
+  const [autoClickers, setAutoClickers] = useState(0);
+  const [autoClickerCost, setAutoClickerCost] = useState(15);
   const prevLettersRef = useRef([]);
 
   const router = useRouter(); // Initialize the useRouter hook
@@ -22,7 +24,7 @@ export default function Home() {
     const randomLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
 
     // Add the random letter to the fallingLetters array
-    setFallingLetters((prev) => [...prev, randomLetter]);
+    setFallingLetters((prev) => [...prev, { letter: randomLetter, falling: true }]);
 
     // Update the previous letters ref
     prevLettersRef.current = [...prevLettersRef.current, randomLetter];
@@ -37,6 +39,22 @@ export default function Home() {
     // Clear the falling letters when the component unmounts or when a new letter is spawned
     return () => clearTimeout(clearFallingLetters);
   }, [fallingLetters]);
+
+  const handlePurchaseAutoClicker = () => {
+    if (num >= autoClickerCost) {
+      setAutoClickers((prev) => prev + 1);
+      setNum((prev) => prev - autoClickerCost);
+      setAutoClickerCost((prev) => Math.ceil(prev * 1.05)); // Increase cost for the next auto clicker
+    }
+  };
+
+  useEffect(() => {
+    const autoClickerInterval = setInterval(() => {
+      setNum((prev) => Number((prev + autoClickers * 0.02).toFixed(2))); // Add 0.02 to num for each auto clicker every millisecond
+    }, 5); // Set the interval to 1 ms
+
+    return () => clearInterval(autoClickerInterval);
+  }, [autoClickers]);
 
   useEffect(() => {
     // Change the font to Consolas for specific elements
@@ -65,28 +83,34 @@ export default function Home() {
     >
       Go to Wordle
     </button>
+
       <div style={{ textAlign: 'center', paddingTop: '20px' }}>
         <h1 className="change-font-to-consolas" style={{ fontSize: '36px' }}>Wordle Clicker</h1>
       </div>
+
       <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '20px' }}>
         Letters spawned: {num}
       </div>
+
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
         {fallingLetters.map((fallingLetter, index) => (
+        fallingLetter.falling && ( // Render only falling letters
           <div
             key={index}
             style={{
               position: 'absolute',
-              top: `${index * 30}px`, // Adjust the spacing between falling letters
-              left: '50%',
+              top: `${Math.random() * -200}px`,
+              left: `${Math.random() * 100}vw`,
               transform: 'translateX(-50%)',
               animation: 'fallingAnimation 1s ease-out',
               fontSize: '24px',
             }}
           >
-            {fallingLetter}
+            {fallingLetter.letter}
           </div>
-        ))}
+        )
+      ))}
+
         <button
           onClick={handleClick}
           style={{
@@ -94,10 +118,24 @@ export default function Home() {
             padding: '5px',
             fontSize: '16px',
             cursor: 'pointer',
-            border: '2px solid #900',
+            border: '2px solid #059',
           }}
         >
           WordleMaxx
+        </button>
+
+          <button
+            onClick={handlePurchaseAutoClicker}
+            style={{
+              marginTop: '5px',
+              padding: '5px',
+              fontSize: '16px', 
+              cursor: 'pointer',
+              border: '2px solid #059',
+              marginLeft: '10px',
+            }}
+          >
+            Purchase Auto Clicker ({autoClickerCost} letters)
         </button>
       </div>
     </div>

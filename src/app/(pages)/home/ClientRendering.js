@@ -11,6 +11,11 @@ import GameOver from "@/components/GameOver"
 
 
 const ClientComponent = ({ children }) => {
+  const router = useRouter(); // Initialize the useRouter hook
+
+  const navigateToWordleClicker = () => {
+    router.push('/wordle-clicker'); // Specify the path to your "wordle-clicker" page
+  };
 
   const { supabase } = useSupabase();
 
@@ -254,7 +259,31 @@ const ClientComponent = ({ children }) => {
 
   return (
     <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
-      <div>{children}</div>
+      {children}
+      <button
+      onClick={navigateToWordleClicker}
+      style={{
+        position: 'absolute',
+        top: '50px',
+        left: '0',
+        backgroundColor: '#000',
+        color: '#888',
+        padding: '0.5rem 1rem',
+        borderRadius: '4px',
+        margin: '1rem', // Adjust the margin as needed
+      }}
+    >
+      Go to Wordle Clicker
+    </button>
+    {isGameOver && (
+      <GameOver
+        title="Game Over"
+        message={gameOverMessage}
+        show={isGameOver}
+        onClose={resetGame}
+      />
+    )}
+    
       {isGameOver && (
         <GameOver
           title="Game Over"

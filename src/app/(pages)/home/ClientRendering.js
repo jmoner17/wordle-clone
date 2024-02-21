@@ -12,6 +12,8 @@ import GameOver from "@/components/GameOver"
 
 const ClientComponent = ({ children }) => {
 
+  console.log(("rerender occured"));
+
   const { supabase } = useSupabase();
 
   const ROW_SIZE = 6;
@@ -89,7 +91,7 @@ const ClientComponent = ({ children }) => {
 
   /**
    * @var {string} gameOverMessage
-   * @brief sets the game over message that is dispalyed on the screen
+   * @brief sets the game over message that is displayed on the screen
    * todo: move this handing to the GameOver component in @/components/GameOver.js
    */
   const [gameOverMessage, setGameOverMessage] = useState('');
@@ -221,7 +223,7 @@ const ClientComponent = ({ children }) => {
                 }
 
                 setFeedback(newFeedback);
-                
+
                 if (isGameOver == false) {
                   if (target == guess) {
                     setIsGameOver(true);

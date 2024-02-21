@@ -351,3 +351,26 @@
   font-size: 24px;
   color: var(--dark-text-color);
 }
+.theme-button {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  padding: 0.5rem 1rem;
+  border: 1px; /* Assuming this is meant to be the border width, add a style like solid or dashed */
+  margin: 1rem; /* Adjust the margin as needed */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.light .theme-button {
+  box-shadow: 0 0 10px rgba(235, 150, 22, 0.8);
+  background-color: #ff9320;
+  color: #000000;
+  border-color: #000000;
+}
+
+.dark .theme-button {
+  box-shadow: 0 0 10px rgba(50, 19, 151, 0.8);
+  background-color: #152c5d; 
+  color: #fcfcfc; 
+  border-color: #ffffff;
+}

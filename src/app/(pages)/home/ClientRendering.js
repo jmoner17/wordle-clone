@@ -93,6 +93,12 @@ const ClientComponent = ({ children }) => {
   const [isGameOver, setIsGameOver] = useState(false);
 
   /**
+   * @var {isLose}
+   * @brief check if you lost when game is over
+   */
+  const [isLose, setIsLose] = useState(false);
+
+  /**
    * @var {string} gameOverMessage
    * @brief sets the game over message that is dispalyed on the screen
    * todo: move this handing to the GameOver component in @/components/GameOver.js
@@ -230,10 +236,9 @@ const ClientComponent = ({ children }) => {
                 if (isGameOver == false) {
                   if (target == guess) {
                     setIsGameOver(true);
-                    setGameOverMessage("You're Winner!");
                   } else if (row >= ROW_SIZE - 1 && target != guess) {
                     setIsGameOver(true);
-                    setGameOverMessage("You're BAD! Word was: "+target);
+                    setIsLose(true);
                   }
                 }
                 if (!letter[row].includes('') && row < ROW_SIZE - 1) {
@@ -254,7 +259,7 @@ const ClientComponent = ({ children }) => {
     return () => {
       document.removeEventListener('keydown', keyPressHandler);
     };
-  }, [letter, row, feedback, target, isGameOver, supabase, nextIndex1, validGuess]);
+  }, [letter, row, feedback, target, isGameOver, isLose, supabase, nextIndex1, validGuess]);
 
 
   return (
@@ -262,36 +267,19 @@ const ClientComponent = ({ children }) => {
       {children}
       <button
       onClick={navigateToWordleClicker}
-      style={{
-        position: 'absolute',
-        top: '50px',
-        left: '0',
-        backgroundColor: '#000',
-        color: '#888',
-        padding: '0.5rem 1rem',
-        borderRadius: '4px',
-        margin: '1rem', // Adjust the margin as needed
-      }}
+      className={`theme-button`}
     >
       Go to Wordle Clicker
     </button>
     {isGameOver && (
       <GameOver
         title="Game Over"
-        message={gameOverMessage}
+        message={isLose ? `You're BAD! Word was: ${target}` : `You're Winner!`}
         show={isGameOver}
         onClose={resetGame}
       />
     )}
     
-      {isGameOver && (
-        <GameOver
-          title="Game Over"
-          message={gameOverMessage}
-          show={isGameOver}
-          onClose={resetGame}
-        />
-      )}
       <div className="flex-grow-0 w-full justify-center">
         {letter.map((row, rowIndex) => (
           <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">

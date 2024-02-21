@@ -69,20 +69,11 @@ export default function Home() {
     
     <div>
       <button
-      onClick={navigateHome}
-      style={{
-        position: 'absolute',
-        top: '50px',
-        left: '0',
-        backgroundColor: '#000',
-        color: '#888',
-        padding: '0.5rem 1rem',
-        borderRadius: '4px',
-        margin: '1rem', // Adjust the margin as needed
-      }}
-    >
-      Go to Wordle
-    </button>
+        onClick={navigateHome}
+        className={`theme-button`}
+      >
+        Go Home
+      </button>
 
       <div style={{ textAlign: 'center', paddingTop: '20px' }}>
         <h1 className="change-font-to-consolas" style={{ fontSize: '36px' }}>Wordle Clicker</h1>

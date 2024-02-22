@@ -1,13 +1,12 @@
-import ClientComponent  from "./ClientRendering";
-import ServerComponent from "./ServerRendering";
+import ClientComponent  from "./ClientRender";
+import LogoComponent from "./logo";
 
 export default function  Home () {
     return (
       <div>
         <ClientComponent>
-          <ServerComponent />
+          <LogoComponent />
         </ClientComponent>
       </div>
     );
 };
-  

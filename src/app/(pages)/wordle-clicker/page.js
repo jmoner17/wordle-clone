@@ -7,7 +7,7 @@ export default function Home() {
   const [num, setNum] = useState(0.0);
   const [fallingLetters, setFallingLetters] = useState([]);
   const [autoClickers, setAutoClickers] = useState(0);
-  const [autoClickerCost, setAutoClickerCost] = useState(15);
+  const [autoClickerCost, setAutoClickerCost] = useState(100);
   const prevLettersRef = useRef([]);
 
   const router = useRouter(); // Initialize the useRouter hook
@@ -102,18 +102,18 @@ export default function Home() {
         )
       ))}
 
-        <button
-          onClick={handleClick}
-          style={{
-            marginTop: '5px',
-            padding: '5px',
-            fontSize: '16px',
-            cursor: 'pointer',
-            border: '2px solid #059',
-          }}
-        >
-          WordleMaxx
-        </button>
+          <button
+            onClick={handleClick}
+            style={{
+              marginTop: '5px',
+              padding: '5px',
+              fontSize: '16px',
+              cursor: 'pointer',
+              border: '2px solid #059',
+            }}
+          >
+            WordleMaxx
+          </button>
 
           <button
             onClick={handlePurchaseAutoClicker}

@@ -38,7 +38,7 @@ export default function Home() {
 
     // Clear the falling letters when the component unmounts or when a new letter is spawned
     return () => clearTimeout(clearFallingLetters);
-  }, [fallingLetters]);
+  }, []);
 
   const handlePurchaseAutoClicker = () => {
     if (num >= autoClickerCost) {
@@ -60,7 +60,8 @@ export default function Home() {
     // Change the font to Consolas for specific elements
     const elementsToChangeFont = document.querySelectorAll('.change-font-to-consolas');
 
-    elementsToChangeFont.forEach(element => {
+    // biome-ignore lint/complexity/noForEach: <explanation>
+elementsToChangeFont.forEach(element => {
       element.style.fontFamily = 'Consolas, monospace';
     });
   }, []); // Run this effect once on component mount
@@ -68,9 +69,10 @@ export default function Home() {
   return (
     
     <div>
+      {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
       <button
         onClick={navigateHome}
-        className={`theme-button`}
+        className={"theme-button"}
       >
         Go Home
       </button>
@@ -87,7 +89,8 @@ export default function Home() {
         {fallingLetters.map((fallingLetter, index) => (
         fallingLetter.falling && ( // Render only falling letters
           <div
-            key={index}
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+key={index}
             style={{
               position: 'absolute',
               top: `${Math.random() * -200}px`,
@@ -102,7 +105,8 @@ export default function Home() {
         )
       ))}
 
-          <button
+          {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
             onClick={handleClick}
             style={{
               marginTop: '5px',
@@ -115,7 +119,8 @@ export default function Home() {
             WordleMaxx
           </button>
 
-          <button
+          {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
             onClick={handlePurchaseAutoClicker}
             style={{
               marginTop: '5px',

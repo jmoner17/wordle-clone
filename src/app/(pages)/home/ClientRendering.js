@@ -116,7 +116,6 @@ const ClientComponent = ({ children }) => {
   const resetGame = () => {
     //if isGameOver is not true then do not reset game
     if (isGameOver === false) return;
-    else
       setLetter(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
     setRow(0);
     setRandomId(Math.floor(Math.random() * (5749)) + 1);
@@ -153,7 +152,8 @@ const ClientComponent = ({ children }) => {
   }, [supabase, randomId]);
 
   //handles all keypress events
-  useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+useEffect(() => {
     const keyPressHandler = (e) => {
       
       //if keypress is a non-unicode non-numerical letter then keypress is valid
@@ -179,7 +179,7 @@ const ClientComponent = ({ children }) => {
       //if backspace is pressed and the row isn't empty, then remove the letter int he currently focused letterbox
       else if (e.key === 'Backspace' && row < ROW_SIZE) {
         //finds the position of the previous letter
-        let prevIndex = letter[row].findLastIndex(letter => letter !== '');
+        const prevIndex = letter[row].findLastIndex(letter => letter !== '');
         if (prevIndex >= 0) {
           const newLetter = [...letter];
           newLetter[row][prevIndex] = '';
@@ -188,7 +188,7 @@ const ClientComponent = ({ children }) => {
         }
       }
       //if enter is pressed, and the game isn't over. proceed with processing the word typed in the current row
-      else if (e.key === 'Enter' && isGameOver == false) {
+      else if (e.key === 'Enter' && isGameOver === false) {
         const guess = letter[row].join('');
         //checks if the guessed word is int he supabase database
         //! processing word validation here causes many runtime issues this should be moved to a server side component
@@ -204,10 +204,9 @@ const ClientComponent = ({ children }) => {
             if (error) {
               setValidGuess(false);
               return false;
-            } else {
+            }
               setValidGuess(true);
               return true;
-            }
           } catch (error) {
             setLoading(false);
             console.error('Error validating word:', error);
@@ -233,10 +232,10 @@ const ClientComponent = ({ children }) => {
 
                 setFeedback(newFeedback);
                 
-                if (isGameOver == false) {
-                  if (target == guess) {
+                if (isGameOver === false) {
+                  if (target === guess) {
                     setIsGameOver(true);
-                  } else if (row >= ROW_SIZE - 1 && target != guess) {
+                  } else if (row >= ROW_SIZE - 1 && target !== guess) {
                     setIsGameOver(true);
                     setIsLose(true);
                   }
@@ -265,9 +264,10 @@ const ClientComponent = ({ children }) => {
   return (
     <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
       {children}
+      {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
       <button
       onClick={navigateToWordleClicker}
-      className={`theme-button`}
+      className={"theme-button"}
     >
       Go to Wordle Clicker
     </button>
@@ -282,10 +282,12 @@ const ClientComponent = ({ children }) => {
     
       <div className="flex-grow-0 w-full justify-center">
         {letter.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
+          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
             {row.map((letter, letterIndex) => (
               <LetterBox
-                key={letterIndex}
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+key={letterIndex}
                 ref={refRow.current[rowIndex][letterIndex]}
                 letter={letter}
                 error={error}

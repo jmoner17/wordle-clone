@@ -202,8 +202,6 @@ function getFeedback(guess, targetWord) {
         if (feedback[index] === null) { 
             if (mutedTarget.map(l => l.toUpperCase()).includes(letter.toUpperCase())) {
                 feedback[index] = 'present';
-                const matchIndex = mutedTarget.findIndex(l => l.toUpperCase() === letter.toUpperCase());
-                mutedTarget[matchIndex] = '0';
             } else {
                 feedback[index] = 'none';
             }

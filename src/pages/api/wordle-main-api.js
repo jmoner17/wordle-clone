@@ -11,6 +11,20 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
 
+/**
+ * *************************************************
+ *                                                 *
+ *                 GLOBAL CONSTANTS                *
+ *                                                 *
+ * *************************************************
+ */
+
+const MAX_ATTEMPTS = 6;
+const WORD_LENGTH = 5;
+
+
+
+
 //Generates the pub private keypair
 //todo: rather than generating a massive key we will generate a singular less computationally intense hash
 function generateKeyPair() {
@@ -19,11 +33,11 @@ function generateKeyPair() {
 }
 
 function generateRandomNumber() {
-    return crypto.randomInt(1, 5749); // Note: The max is exclusive
+    return crypto.randomInt(1, 5749);
 }
 
-async function getNewWord() {
-    const randomId = generateRandomNumber(); // This is synchronous and returns a number directly.
+async function getNewTarget() {
+    const randomId = generateRandomNumber();
 
     try {
         const { data, error } = await supabase
@@ -59,9 +73,7 @@ async function insertSession(word, publicKeyPem) {
     return true;
 }
 
-async function deleteWord() {
 
-}
 
 async function isActualWord(guess) {
     try {
@@ -104,46 +116,167 @@ async function getTarget(publicKey) {
     }
 }
 
+async function getAttempts(publicKey) {
+
+    try {
+        const { data, error } = await supabase
+            .from("sessions")
+            .select("attempts")
+            .eq('key', publicKey)
+            .single();
+
+        if (error) {
+            console.error("Uh oh!", error.message);
+            return null;
+        }
+        return data?.attempts;
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return null;
+    }
+}
+
+async function updateAttempts(publicKey, currentAttempts) {
+
+
+    const { error } = await supabase
+        .from('sessions')
+        .update([
+            { attempts: currentAttempts + 1}
+        ])
+        .eq('key', publicKey);
+
+    if (error) {
+        console.error("Insert error:", error.message);
+        return false;
+    }
+    return true;
+}
+
+//! if a user is able ot call this function then they can get infinite attempts
+async function resetAttempts(publicKey) {
+
+    const { error } = await supabase
+        .from('sessions')
+        .update([
+            {attempts: 0}
+        ])
+        .eq('key', publicKey);
+
+    if (error) {
+        console.error("Insert error:", error.message);
+        return false;
+    }
+    return true;
+}
+
+
+async function resetTarget(publicKey) {
+    const newTarget = await getNewTarget();
+    const { error } = await supabase
+        .from('sessions')
+        .update([
+            { word: newTarget}
+        ])
+        .eq('key', publicKey);
+
+    if (error) {
+        console.error("Insert error:", error.message);
+        return false;
+    }
+    return true;
+}
+
+function getFeedback(guess, targetWord) {
+    const mutedTarget = targetWord.split('');
+
+    const feedback = guess.split('').map((letter, index) => {
+        if (letter.toUpperCase() === targetWord[index].toUpperCase()) {
+            mutedTarget[index] = '0'; 
+            return 'correct';
+        }
+        return null; 
+    });
+
+    guess.split('').forEach((letter, index) => {
+        if (feedback[index] === null) { 
+            if (mutedTarget.map(l => l.toUpperCase()).includes(letter.toUpperCase())) {
+                feedback[index] = 'present';
+                const matchIndex = mutedTarget.findIndex(l => l.toUpperCase() === letter.toUpperCase());
+                mutedTarget[matchIndex] = '0';
+            } else {
+                feedback[index] = 'none';
+            }
+        }
+    });
+
+    return feedback;
+}
 
 // API route for initializing a game
 export default async function handler(req, res) {
     if (req.method === 'POST') {
         if (req.body.guess && req.body.publicKey) {
+            let isTargetWord = false;
+            let forceGameOver = false;
             const { guess, publicKey } = req.body;
 
-            const [actualWord, targetWord] = await Promise.all([
+            const [actualWord, targetWord, currentAttempts_DO_NOT_USE] = await Promise.all([
                 isActualWord(guess),
                 getTarget(publicKey),
+                getAttempts(publicKey),
             ]);
+
+            let currentAttempts = currentAttempts_DO_NOT_USE;
+            
+            if (targetWord === null || currentAttempts === null || actualWord === null) {
+                return res.status(500).json({ error: "An error occurred while validating the guess." });
+            }
 
             if (!actualWord) {
                 return res.status(200).json({ isActualWord: false });
             }
+            //! we should consider if this should be an await function or determine if there is enough time 
+            //!costed by the other functions that this isn't an issue
+
+            const[feedback] = await Promise.all([
+                getFeedback(guess, targetWord),
+                updateAttempts(publicKey, currentAttempts_DO_NOT_USE)  
+            ])
+            currentAttempts++;
             
-            if (targetWord === null) {
-                return res.status(500).json({ error: "An error occurred while validating the guess." });
+            // Determine if the guess matches the target word
+            if(guess.toUpperCase() === targetWord.toUpperCase()) {
+                isTargetWord = true;
+
+                await Promise.all([
+                   resetTarget(publicKey),
+                   resetAttempts(publicKey),
+                ]);
             }
 
-            // Determine if the guess matches the target word
-            const isTargetWord = guess.toUpperCase() === targetWord.toUpperCase();
+            if(currentAttempts >= MAX_ATTEMPTS) {
+                forceGameOver = true;
 
-            // Generate feedback for each letter in the guess
-            const feedback = guess.split('').map((letter, index) => {
-                if (letter.toUpperCase() === targetWord[index].toUpperCase()) return 'correct';
-                if (targetWord.toUpperCase().includes(letter.toUpperCase())) return 'present';
-                return 'none';
-            });
+                await Promise.all([
+                    resetTarget(publicKey),
+                    resetAttempts(publicKey),
+                 ]);
+            }
+
+
             return res.status(200).json({
                 isActualWord: true,
                 isTargetWord: isTargetWord,
-                feedback: feedback
+                feedback: feedback,
+                forceGameOver: forceGameOver
             });
         }
 
         // Initialize game session if not validating a guess
         const { publicKey, privateKey } = generateKeyPair();
         const publicKeyPem = pki.publicKeyToPem(publicKey);
-        const word = await getNewWord();
+        const word = await getNewTarget();
         if (!word) {
             return res.status(500).json({ error: "Failed to fetch word" });
         }

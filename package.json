@@ -33,6 +33,7 @@
     "react-resizable": "^3.0.5",
     "react-swipeable": "^7.0.1",
     "react-transition-group": "^4.4.5",
+    "server-only": "^0.0.1",
     "sharp": "^0.33.2",
     "slate": "^0.101.5",
     "slate-history": "^0.100.0",

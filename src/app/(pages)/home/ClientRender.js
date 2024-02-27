@@ -2,23 +2,17 @@
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useUser } from "@/utils/useClient";
-import { useSupabase } from "@/utils/supabase-provider";
-import { useRouter } from 'next/navigation';
 import LetterBox from "@/components/LetterBox"
-import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import GameOver from "@/components/GameOver"
 import debounce from 'lodash.debounce';
 
 const ClientComponent = ({ children }) => {
 
-    const { supabase } = useSupabase();
 
     const ROW_SIZE = 6;
     const LETTER_SIZE = 5;
 
     const [sessionData, setSessionData] = useState({ publicKey: '', token: '' });
-
-    const [guess, setGuess] = useState('');
 
     /**
     * @var {boolean} loading
@@ -86,6 +80,49 @@ const ClientComponent = ({ children }) => {
 
     }, 250), []);
 
+    
+    useEffect(() => {
+        // load the game state locally 
+        const loadGameState = () => {
+          const savedLetter = JSON.parse(localStorage.getItem('letter'));
+          const savedRow = JSON.parse(localStorage.getItem('row'));
+          const savedFeedback = JSON.parse(localStorage.getItem('feedback'));
+          const savedIsTargetWord = JSON.parse(localStorage.getItem('isTargetWord'));
+          const savedIsGameOver = JSON.parse(localStorage.getItem('isGameOver'));
+          const savedGameOverMessage = JSON.parse(localStorage.getItem('gameOverMessage'));
+          const savedError = JSON.parse(localStorage.getItem('error'));
+          
+          if (savedLetter !== null) setLetter(savedLetter);
+          if (savedRow !== null) setRow(savedRow);
+          if (savedFeedback !== null) setFeedback(savedFeedback);
+          if (savedIsTargetWord !== null) setIsTargetWord(savedIsTargetWord);
+          if (savedIsGameOver !== null) setIsGameOver(savedIsGameOver);
+          if (savedGameOverMessage !== null) setGameOverMessage(savedGameOverMessage);
+          if (savedError !== null) setError(savedError);
+        };
+      
+        loadGameState();
+      }, []);
+      
+      useEffect(() => {
+        // save the game on reload ro window close
+        const saveGameState = () => {
+          localStorage.setItem('letter', JSON.stringify(letter));
+          localStorage.setItem('row', JSON.stringify(row));
+          localStorage.setItem('feedback', JSON.stringify(feedback));
+          localStorage.setItem('isTargetWord', JSON.stringify(isTargetWord));
+          localStorage.setItem('isGameOver', JSON.stringify(isGameOver));
+          localStorage.setItem('gameOverMessage', JSON.stringify(gameOverMessage));
+          localStorage.setItem('error', JSON.stringify(error));
+        };
+      
+        window.addEventListener('beforeunload', saveGameState);
+      
+        return () => {
+          window.removeEventListener('beforeunload', saveGameState);
+        };
+      }, [letter, row, feedback, isTargetWord, isGameOver, gameOverMessage,error]);
+
 
     useEffect(() => {
         // Check if key already exists in localStorage
@@ -112,6 +149,8 @@ const ClientComponent = ({ children }) => {
         setIsGameOver(false);
         setError('');
     };
+
+    
 
     //handles all keypress events
     useEffect(() => {
@@ -155,6 +194,7 @@ const ClientComponent = ({ children }) => {
                  * {
                  *  "isActualWord": true,
                  *  "isTargetWord": false,
+                 *  "isGameOver": false,
                  *  "feedback": ["correct", "correct", "present", "none", "present"]
                  * }
                  * 
@@ -172,18 +212,26 @@ const ClientComponent = ({ children }) => {
                         const data = await response.json();
 
                         if (data.isActualWord) {
+
                             const newFeedback = [...feedback];
                             setIsActualWord(true);
                             setRow(row + 1);
-                            if(row < ROW_SIZE - 1) {
+                            if (row < ROW_SIZE - 1) {
                                 refRow.current[row + 1][0].current.focus();
                             }
                             if (data.isTargetWord) {
-                                setIsTargetWord(true) // we prob will use isGameOver here but boo hoo
+                                setIsTargetWord(true)
+                                setGameOverMessage("You're Winner!");
+                                setIsGameOver(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
-                            } else {
-                                
+                            } else if (data.forceGameOver) {
+                                setGameOverMessage("You're BAD!");
+                                setIsGameOver(true);
+                                newFeedback[row] = data.feedback;
+                                setFeedback(newFeedback);
+                            }
+                            else {
                                 newFeedback[row] = data.feedback;
                             }
                             setFeedback(newFeedback);
@@ -198,22 +246,12 @@ const ClientComponent = ({ children }) => {
             }
         };
 
-        if (isGameOver === false) {
-            if (isTargetWord) {
-                setGameOverMessage("You're Winner!");
-                setIsGameOver(true);
-            } else if (row >= ROW_SIZE) {
-                setGameOverMessage("You're BAD!");
-                setIsGameOver(true);
-            }
-        }
-
         document.addEventListener('keydown', keyPressHandler);
 
         return () => {
             document.removeEventListener('keydown', keyPressHandler);
         };
-    }, [letter, row, feedback, isGameOver, supabase, isActualWord, isTargetWord]);
+    }, [letter, row, feedback, isGameOver, isActualWord, isTargetWord]);
 
 
 

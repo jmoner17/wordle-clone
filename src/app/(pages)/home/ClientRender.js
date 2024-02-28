@@ -80,48 +80,51 @@ const ClientComponent = ({ children }) => {
 
     }, 250), []);
 
-    
+
     useEffect(() => {
         // load the game state locally 
         const loadGameState = () => {
-          const savedLetter = JSON.parse(localStorage.getItem('letter'));
-          const savedRow = JSON.parse(localStorage.getItem('row'));
-          const savedFeedback = JSON.parse(localStorage.getItem('feedback'));
-          const savedIsTargetWord = JSON.parse(localStorage.getItem('isTargetWord'));
-          const savedIsGameOver = JSON.parse(localStorage.getItem('isGameOver'));
-          const savedGameOverMessage = JSON.parse(localStorage.getItem('gameOverMessage'));
-          const savedError = JSON.parse(localStorage.getItem('error'));
-          
-          if (savedLetter !== null) setLetter(savedLetter);
-          if (savedRow !== null) setRow(savedRow);
-          if (savedFeedback !== null) setFeedback(savedFeedback);
-          if (savedIsTargetWord !== null) setIsTargetWord(savedIsTargetWord);
-          if (savedIsGameOver !== null) setIsGameOver(savedIsGameOver);
-          if (savedGameOverMessage !== null) setGameOverMessage(savedGameOverMessage);
-          if (savedError !== null) setError(savedError);
+            const savedLetter = JSON.parse(localStorage.getItem('letter'));
+            const savedRow = JSON.parse(localStorage.getItem('row'));
+            const savedFeedback = JSON.parse(localStorage.getItem('feedback'));
+            const savedIsTargetWord = JSON.parse(localStorage.getItem('isTargetWord'));
+            const savedIsGameOver = JSON.parse(localStorage.getItem('isGameOver'));
+            const savedGameOverMessage = JSON.parse(localStorage.getItem('gameOverMessage'));
+            const savedError = JSON.parse(localStorage.getItem('error'));
+
+            if (savedLetter !== null) setLetter(savedLetter);
+            if (savedRow !== null) setRow(savedRow);
+            if (savedFeedback !== null) setFeedback(savedFeedback);
+            if (savedIsTargetWord !== null) setIsTargetWord(savedIsTargetWord);
+            if (savedIsGameOver !== null) setIsGameOver(savedIsGameOver);
+            if (savedGameOverMessage !== null) setGameOverMessage(savedGameOverMessage);
+            if (savedError !== null) setError(savedError);
         };
-      
+
         loadGameState();
-      }, []);
-      
-      useEffect(() => {
-        // save the game on reload ro window close
+    }, []);
+
+    useEffect(() => {
+        // save the game on reload or window close
         const saveGameState = () => {
-          localStorage.setItem('letter', JSON.stringify(letter));
-          localStorage.setItem('row', JSON.stringify(row));
-          localStorage.setItem('feedback', JSON.stringify(feedback));
-          localStorage.setItem('isTargetWord', JSON.stringify(isTargetWord));
-          localStorage.setItem('isGameOver', JSON.stringify(isGameOver));
-          localStorage.setItem('gameOverMessage', JSON.stringify(gameOverMessage));
-          localStorage.setItem('error', JSON.stringify(error));
+            const storedPublicKey = localStorage.getItem('publicKey');
+            if (storedPublicKey !== null) {
+                localStorage.setItem('letter', JSON.stringify(letter));
+                localStorage.setItem('row', JSON.stringify(row));
+                localStorage.setItem('feedback', JSON.stringify(feedback));
+                localStorage.setItem('isTargetWord', JSON.stringify(isTargetWord));
+                localStorage.setItem('isGameOver', JSON.stringify(isGameOver));
+                localStorage.setItem('gameOverMessage', JSON.stringify(gameOverMessage));
+                localStorage.setItem('error', JSON.stringify(error));
+            }
         };
-      
+
         window.addEventListener('beforeunload', saveGameState);
-      
+
         return () => {
-          window.removeEventListener('beforeunload', saveGameState);
+            window.removeEventListener('beforeunload', saveGameState);
         };
-      }, [letter, row, feedback, isTargetWord, isGameOver, gameOverMessage,error]);
+    }, [letter, row, feedback, isTargetWord, isGameOver, gameOverMessage, error]);
 
 
     useEffect(() => {
@@ -150,7 +153,7 @@ const ClientComponent = ({ children }) => {
         setError('');
     };
 
-    
+
 
     //handles all keypress events
     useEffect(() => {

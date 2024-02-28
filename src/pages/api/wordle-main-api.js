@@ -234,9 +234,7 @@ export default async function handler(req, res) {
             if (!actualWord) {
                 return res.status(200).json({ isActualWord: false });
             }
-            //! we should consider if this should be an await function or determine if there is enough time 
-            //!costed by the other functions that this isn't an issue
-
+            
             const[feedback] = await Promise.all([
                 getFeedback(guess, targetWord),
                 updateAttempts(publicKey, currentAttempts_DO_NOT_USE)  

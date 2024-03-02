@@ -166,5 +166,4 @@ dmypy.json
 
 
 wandb/
-wandb
 wandb-debug.log

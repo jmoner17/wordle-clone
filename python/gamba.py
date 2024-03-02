@@ -53,7 +53,7 @@ def count_wilds(board, target_word): #good
                         wilds_1x += 1
     return wilds_1x, wilds_3x
 
-def find_all_connections(board, row, col, target_word, current_path, all_connections, connection_letter):
+def find_all_connections(board, row, col, target_word, current_path, all_connections, connection_letter): #good
     # Base condition to return if the position is out of bounds
     if col >= 5:  # Since we only move right, no need to check col < 0
         # If the current path exactly meets the criteria for a connection of 5
@@ -82,9 +82,8 @@ def find_all_connections(board, row, col, target_word, current_path, all_connect
             if 0 <= new_row < 4:  # Ensure new row is within bounds
                 #WHAT IN THE ACTUAL FUCK YOU MEAN STrInGs ArEnt mUtABle iN pYtHOn that is so fucking stupid
                 find_all_connections(board, new_row, col + 1, target_word, new_path, all_connections, "" if connection_letter == "" else letter)
-            
 
-def find_all_connections_bonus_2(board, row, col, target_word, current_path, all_connections, multipliers, discovered_connections):
+def find_all_connections_bonus_1(board, row, col, target_word, current_path, all_connections, connection_letter): #good
     # Base condition to return if the position is out of bounds
     if col >= 5:  # Since we only move right, no need to check col < 0
         # If the current path exactly meets the criteria for a connection of 5
@@ -94,56 +93,111 @@ def find_all_connections_bonus_2(board, row, col, target_word, current_path, all
 
     # Recursive exploration
     if 0 <= row < 4:  # Ensure row is within bounds
-        if (row, col) not in current_path:  # Proceed if current position is not already in path
-            letter = board[row][col]
-            if letter in target_word:
-                # Add the current position to the path and explore further
-                new_path = current_path + [(row, col)]
-                # Directly moving to the next column, as specified by the original logic
-                find_all_connections(board, row, col + 1, target_word, new_path, all_connections)
-                
-                # Explore adjacent rows in the next column
-                for row_delta in [-1, 0, 1]:  # Move up and down
-                    new_row = row + row_delta
-                    if 0 <= new_row < 4:  # Ensure new row is within bounds
-                        find_all_connections(board, new_row, col + 1, target_word, new_path, all_connections)
-            else:
-                # If the current letter is not in the target_word, just move to the next column without adding to the path
-                find_all_connections(board, row, col + 1, target_word, current_path, all_connections)
+        current_position = BoardPosition(row, col, "1x") if 0 <= col < 5 else None
+        letter = board[current_position.row][current_position.col]
+        if letter == target_word[col]:
+            current_position.data = "3x"
+        elif letter == "3x":
+            current_position.data = "3x"
+        elif letter in target_word or letter == connection_letter:
+            current_position.data = "1x"
+        elif connection_letter == "":
+            connection_letter = letter
+            current_position.data = "1x"
+        else:
+            return
+            
+        new_path = current_path + [current_position]
+            
+        for row_delta in [-1, 0, 1]:  # Move up and down
+            new_row = row + row_delta
+            if 0 <= new_row < 4:  # Ensure new row is within bounds
+                #WHAT IN THE ACTUAL FUCK YOU MEAN STrInGs ArEnt mUtABle iN pYtHOn that is so fucking stupid
+                find_all_connections_bonus_1(board, new_row, col + 1, target_word, new_path, all_connections, "" if connection_letter == "" else letter)
+            
 
+def find_all_connections_bonus_2(board, row, col, target_word, current_path, all_connections, connection_letter): #good
+    # Base condition to return if the position is out of bounds
+    if col >= 5:  # Since we only move right, no need to check col < 0
+        # If the current path exactly meets the criteria for a connection of 5
+        if len(current_path) == 5:
+            all_connections.add(tuple(current_path))
+        return
+
+    # Recursive exploration
+    if 0 <= row < 4:  # Ensure row is within bounds
+        current_position = BoardPosition(row, col, "1x") if 0 <= col < 5 else None
+        letter = board[current_position.row][current_position.col]
+        
+        #yes this switch statement can probably be simplified but i am doing this so i have some form of error handling
+        match letter:
+            case '1x':
+                current_position.data = "1x" #we technically dont need to do this as its default value is "1x"
+            case '3x':
+                current_position.data = "3x"
+            case '5x':
+                current_position.data = "5x"
+            case '10x':
+                current_position.data = "10x"
+            case '20x':
+                current_position.data = "20x"
+            case '50x':
+                current_position.data = "50x"
+            case '100x':
+                current_position.data = "100x"
+            case _:
+                if letter in target_word or letter == connection_letter:
+                    current_position.data = "1x"
+                elif connection_letter == "":
+                    connection_letter = letter
+                    current_position.data = "1x"
+                else:
+                    return
+
+        new_path = current_path + [current_position]
+            
+        for row_delta in [-1, 0, 1]:  # Move up and down
+            new_row = row + row_delta
+            if 0 <= new_row < 4:  # Ensure new row is within bounds
+                #WHAT IN THE ACTUAL FUCK YOU MEAN STrInGs ArEnt mUtABle iN pYtHOn that is so fucking stupid
+                find_all_connections_bonus_2(board, new_row, col + 1, target_word, new_path, all_connections, "" if connection_letter == "" else letter)
 
 
 def bonus_round_1(target_word, wilds_3x):
-    free_spins = 6 + (-3 + (wilds_3x * 3))
+    #free_spins = 6 + (-9 + (wilds_3x * 3))
+    free_spins = 6
     total_bonus_payout = 0
+    wild_positions = set()
     for _ in range(free_spins):
         board = generate_board(target_word)  # Generate new board for each spin
         # Apply 3x wilds directly based on target_word positions
         for row in range(4):
             for col in range(5):
-                if board[row][col] == target_word[col]:  # If the letter matches the target word position
-                    # Mark as 3x wild - This is conceptual; actual marking depends on your system
-                    # Assuming a direct comparison suffices to identify 3x wilds here
-                    pass  # This pass statement is a placeholder for any specific logic needed
+                if board[row][col] == target_word[col]:  
+                    wild_positions.add((row, col))
 
-        all_connections = []
+        for row, col in wild_positions:
+            board[row][col] = "3x"
+
+        all_connections = set()
         for row in range(4):
-            find_all_connections(board, row, 0, target_word, [], all_connections, "")
+            find_all_connections_bonus_1(board, row, 0, target_word, [], all_connections, "")
 
         total_bonus_payout += calculate_total_payout_multiplier(all_connections)
     return total_bonus_payout
 
-def bonus_round_2(target_word, wilds_1x, wilds_3x):
+def bonus_round_2(target_word, wilds_1x, wilds_3x): #good
     # Define the multipliers and their adjusted probabilities
-    multipliers = [1, 3, 5, 10, 20, 50, 100]
-    probabilities = [0.6, 0.25, 0.083, 0.04, 0.02, 0.005, 0.002]  # Adjusted probabilities
-
-    free_spins = 6 + (-5 + ((wilds_1x + wilds_3x) * 2))
+    multipliers = ["1x", "3x", "5x", "10x", "20x", "50x", "100x"]
+    #! THE SUM OF THESE PROBABILITIES MUST EQUAL 1
+    probabilities = [0.6, 0.25, 0.083, 0.04, 0.02, 0.005, 0.002] 
+    #adjust this based on entrance condition
+    free_spins = 6 + (-18 + ((wilds_1x + wilds_3x) * 2))
     total_bonus_payout = 0
     for _ in range(free_spins):
-        board = generate_board(target_word)  # Generate new board for each spin
+        board = generate_board(target_word)  
 
-        # Check each column for 3x wilds and apply rules
+        # Check each column for 3x wilds
         for col in range(5):
             column_has_3x_wild = False
             for row in range(4):
@@ -159,19 +213,39 @@ def bonus_round_2(target_word, wilds_1x, wilds_3x):
                 for row in range(4):
                     board[row][col] = column_multiplier  # Setting the multiplier for the column
 
-        all_connections = []
+        all_connections = set()
         for row in range(4):
-            find_all_connections(board, row, 0, target_word, [], all_connections)
+            find_all_connections_bonus_2(board, row, 0, target_word, [], all_connections, "")
 
-        total_bonus_payout += calculate_total_payout_multiplier(all_connections, board)  # Assuming you modify this function to account for multipliers
+        total_bonus_payout += calculate_total_payout_multiplier(all_connections)
     return total_bonus_payout
 
 
 def calculate_total_payout_multiplier(all_connections):
     total_multiplier = 0
-    for connection_length in all_connections:
-        if connection_length == 5:
-            total_multiplier += 5  # 5x for 5-connection
+    for path in all_connections:
+        connection_multiplier = 1
+        for position in path:
+            match position.data:
+                case '1x':
+                    connection_multiplier = connection_multiplier * 1
+                case '3x':
+                    connection_multiplier = connection_multiplier * 3
+                case '5x':
+                    connection_multiplier = connection_multiplier * 5
+                case '10x':
+                    connection_multiplier = connection_multiplier * 10
+                case '20x':
+                    connection_multiplier = connection_multiplier * 20
+                case '50x':
+                    connection_multiplier = connection_multiplier * 50
+                case '100x':
+                    connection_multiplier = connection_multiplier * 100
+                case _:
+                    print("SOMETHING WENT WRONG")
+                    exit(1)
+        total_multiplier += connection_multiplier
+        
     return total_multiplier
 
 def simulate_game():
@@ -186,7 +260,7 @@ def simulate_game():
     payout_multiplier = calculate_total_payout_multiplier(all_connections)
     
     # Check for bonus conditions
-    bonus1_triggered = wilds_3x >= 3
+    bonus1_triggered = wilds_3x >= 3 #tesing purpsoes 
     bonus2_triggered = (wilds_1x + wilds_3x >= 9) and not bonus1_triggered
     bonus_payout = 0  # Initialize bonus payout
     

@@ -163,3 +163,8 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+
+wandb/
+wandb
+wandb-debug.log

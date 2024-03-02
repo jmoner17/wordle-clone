@@ -1,17 +1,21 @@
-import './globals.css'
-import SupabaseProvider from '@/utils/supabase-provider'
-import Providers from '@/utils/providers'
+import "./globals.css";
+import SupabaseProvider from "@/utils/supabase-provider";
+import Providers from "@/utils/providers";
+import Sessions from "@/components/sessions/sessions"
 
 export const metadata = {
-  title: 'wordle',
-  description: 'wordle website',
-}
+  title: "wordle",
+  description: "wordle website",
+};
 
 export default function RootLayout({ children }) {
   return (
+    <>
+    <Sessions/>
     <html lang="en">
       <head>
         <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
           dangerouslySetInnerHTML={{
             __html: `
       (function() {
@@ -32,5 +36,6 @@ export default function RootLayout({ children }) {
         </body>
       </Providers>
     </html>
-  )
+    </>
+  );
 }

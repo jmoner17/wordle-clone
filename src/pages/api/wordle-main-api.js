@@ -11,18 +11,15 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-/**
- * *************************************************
- *                                                 *
- *                 GLOBAL CONSTANTS                *
- *                                                 *
- * *************************************************
- */
+
+// *************************************************
+//                                                 *
+//                 GLOBAL CONSTANTS                *
+//                                                 *
+// *************************************************
 
 const MAX_ATTEMPTS = 6;
 const WORD_LENGTH = 5;
-
-
 
 
 //Generates the pub private keypair

@@ -12,7 +12,6 @@ const ClientComponent = ({ children }) => {
     const ROW_SIZE = 6;
     const LETTER_SIZE = 5;
 
-    const [sessionData, setSessionData] = useState({ publicKey: '', token: '' });
 
     /**
     * @var {boolean} loading
@@ -58,28 +57,12 @@ const ClientComponent = ({ children }) => {
   * @var {isGameOver} isGameOver
   * @brief determines if a win or lose condition is met. when the game is ended, the game over component is 
   *        presented.
-  * ! As this game rule is handled client sided. its state can be manipulated.
-  * todo: mode this mechanic to a server side component
   */
     const [isGameOver, setIsGameOver] = useState(false);
 
     const [gameOverMessage, setGameOverMessage] = useState('');
 
     const [isActualWord, setIsActualWord] = useState(null);
-
-    const createSession = useCallback(debounce(async () => {
-        const response = await fetch('/api/wordle-main-api', { method: 'POST' });
-        const data = await response.json();
-        if (data?.publicKey) {
-            localStorage.setItem('publicKey', data.publicKey);
-            setSessionData(data);
-        }
-        else {
-            setError('Error fetching token');
-        }
-
-    }, 250), []);
-
 
     useEffect(() => {
         // load the game state locally 
@@ -107,8 +90,8 @@ const ClientComponent = ({ children }) => {
     useEffect(() => {
         // save the game on reload or window close
         const saveGameState = () => {
-            const storedPublicKey = localStorage.getItem('publicKey');
-            if (storedPublicKey !== null) {
+            
+            if (localStorage.getItem('publicKey') !== null) {
                 localStorage.setItem('letter', JSON.stringify(letter));
                 localStorage.setItem('row', JSON.stringify(row));
                 localStorage.setItem('feedback', JSON.stringify(feedback));
@@ -127,20 +110,6 @@ const ClientComponent = ({ children }) => {
     }, [letter, row, feedback, isTargetWord, isGameOver, gameOverMessage, error]);
 
 
-    useEffect(() => {
-        // Check if key already exists in localStorage
-        const storedPublicKey = localStorage.getItem('publicKey');
-        if (storedPublicKey) {
-            // If Key exists, set it directly without fetching
-            setSessionData(prevData => ({ ...prevData, publicKey: storedPublicKey }));
-        } else {
-            // create a session
-            createSession();
-        }
-        // Cleanup function to cancel the debounced call if the component unmounts
-        return () => createSession.cancel();
-    }, [createSession]);
-
     const resetGame = () => {
         //if isGameOver is not true then do not reset game
         if (isGameOver === false) return;
@@ -156,6 +125,7 @@ const ClientComponent = ({ children }) => {
 
 
     //handles all keypress events
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         const keyPressHandler = (e) => {
 

@@ -210,10 +210,7 @@ function getFeedback(guess, targetWord) {
 
     return feedback;
 }
-//! IZAAK: ONLY USED WHEN LOSE
-function getLoseWord(publicKey){
-    return getTarget(publicKey);
-}
+
 
 // API route for initializing a game
 export default async function handler(req, res) {
@@ -260,19 +257,27 @@ export default async function handler(req, res) {
             if(currentAttempts >= MAX_ATTEMPTS) {
                 forceGameOver = true;
 
-                await Promise.all([
-                    getLoseWord(publicKey),
+               await Promise.all([
                     resetTarget(publicKey),
                     resetAttempts(publicKey),
                  ]);
             }
 
+            if(forceGameOver){
+                return res.status(200).json({
+                    isActualWord: true,
+                    isTargetWord: isTargetWord,
+                    feedback: feedback,
+                    forceGameOver: forceGameOver,
+                    targetWord: targetWord,
+                });
+            }
 
             return res.status(200).json({
                 isActualWord: true,
                 isTargetWord: isTargetWord,
                 feedback: feedback,
-                forceGameOver: forceGameOver
+                forceGameOver: forceGameOver,
             });
         }
 

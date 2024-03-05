@@ -58,11 +58,6 @@ const ClientComponent = ({ children }) => {
      */
     const [row, setRow] = useState(0);
     const [isTargetWord, setIsTargetWord] = useState(null);
-      /**
-   * @var {isLose}
-   * @brief check if you lost when game is over
-   */
-  const [isLose, setIsLose] = useState(false);
 
     /**
   * @var {isGameOver} isGameOver
@@ -238,7 +233,6 @@ const ClientComponent = ({ children }) => {
                             } else if (data.forceGameOver) {
                                 setGameOverMessage("You're BAD!");
                                 setIsGameOver(true);
-                                setIsLose(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
                             }
@@ -269,7 +263,6 @@ const ClientComponent = ({ children }) => {
     return (
         <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
             <div>{children}</div>
-            {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
             <button
       onClick={navigateToWordleClicker}
       className={"theme-button"}
@@ -287,11 +280,9 @@ const ClientComponent = ({ children }) => {
     
             <div className="flex-grow-0 w-full justify-center">
                 {letter.map((row, rowIndex) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
                     <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
                         {row.map((letter, letterIndex) => (
                             <LetterBox
-                                // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
                                 key={letterIndex}
                                 ref={refRow.current[rowIndex][letterIndex]}
                                 letter={letter}

@@ -210,6 +210,10 @@ function getFeedback(guess, targetWord) {
 
     return feedback;
 }
+//! IZAAK: ONLY USED WHEN LOSE
+function getLoseWord(publicKey){
+    return getTarget(publicKey);
+}
 
 // API route for initializing a game
 export default async function handler(req, res) {
@@ -257,6 +261,7 @@ export default async function handler(req, res) {
                 forceGameOver = true;
 
                 await Promise.all([
+                    getLoseWord(publicKey),
                     resetTarget(publicKey),
                     resetAttempts(publicKey),
                  ]);

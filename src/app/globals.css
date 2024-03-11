@@ -296,7 +296,7 @@
 }
 
 
-/* test stuff */
+/* izaak stuff */
 
 .boxShake {
   /* Start the shake animation and make the animation last for 0.5 seconds */
@@ -373,4 +373,100 @@
   background-color: #152c5d; 
   color: #fcfcfc; 
   border-color: #ffffff;
+}
+.flip {
+  animation: flip 500ms ease forwards;
+}
+
+@keyframes flip {
+  0% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
+/* matt stuff */
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.main {
+  text-align: center;
+}
+
+.body {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  font-weight: bolder;
+}
+
+button {
+  padding: 5px 5px;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+#myimage {
+  position: absolute;
+  transition: 0.05s;
+  height: 200px;
+  width: 200px;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+#myimage2 {
+  transition: 0.05s;
+  position: absolute;
+  height: 150px;
+  width: 300px;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.bounds {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  width: 200px;
+  height: 300px;
+}
+
+@keyframes hor-movement {
+  from {
+    margin-left: 0%;
+  }
+  to {
+    margin-left: 1350%;
+  }
+}
+
+@keyframes ver-movement {
+  from {
+    margin-top: -600%;
+  }
+  to {
+    margin-top: -100%;
+  }
+}
+
+.image {
+  animation-name: hor-movement, ver-movement;
+  animation-duration: 3.141s, 1.414s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: linear;
 }

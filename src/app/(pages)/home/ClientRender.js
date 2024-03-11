@@ -72,6 +72,8 @@ const ClientComponent = ({ children }) => {
 
     const [isActualWord, setIsActualWord] = useState(null);
 
+    const [isFlipped, setIsFlipped] = useState(false);
+
     const createSession = useCallback(debounce(async () => {
         const response = await fetch('/api/wordle-main-api', { method: 'POST' });
         const data = await response.json();
@@ -220,6 +222,7 @@ const ClientComponent = ({ children }) => {
 
                             const newFeedback = [...feedback];
                             setIsActualWord(true);
+                            setIsFlipped(true); //timeToFlip UPDATED
                             setRow(row + 1);
                             if (row < ROW_SIZE - 1) {
                                 refRow.current[row + 1][0].current.focus();
@@ -247,7 +250,7 @@ const ClientComponent = ({ children }) => {
                     }
                 };
                 getFeedback();
-
+                setIsFlipped(false);
             }
         };
 
@@ -289,6 +292,7 @@ const ClientComponent = ({ children }) => {
                                 error={error}
                                 index={letterIndex}
                                 feedback={feedback[rowIndex][letterIndex]}
+                                timeToFlip={isFlipped}
                             />
                         ))}
                     </div>

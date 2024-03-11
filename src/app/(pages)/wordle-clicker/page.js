@@ -2,12 +2,46 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { useSupabase } from "@/utils/supabase-provider";
+import { undo } from "draft-js/lib/EditorState";
 
 export default function Home() {
-  const [num, setNum] = useState(0.0);
-  const [fallingLetters, setFallingLetters] = useState([]);
-  const [autoClickers, setAutoClickers] = useState(0);
-  const [autoClickerCost, setAutoClickerCost] = useState(100);
+  const [_letters, setLetters] = useState(() => {
+    const localNum = localStorage.getItem("LETTERS");
+    if(localNum == null) return 0;
+
+    return JSON.parse(localNum);
+  })
+
+  useEffect(() => {
+    localStorage.setItem("LETTERS", JSON.stringify(_letters))
+  }, [_letters])
+
+ 
+
+  const [autoClickers, setAutoClickers] = useState(() => {
+    const localACCount = localStorage.getItem("AUTO_CLICKERS");
+    if(localACCount == undefined) return 0;
+
+    return JSON.parse(localACCount);
+  })
+
+  useEffect(() => {
+    localStorage.setItem("AUTO_CLICKERS", JSON.stringify(autoClickers))
+  }, [autoClickers])
+
+  const [autoClickerCost, setAutoClickerCost] = useState(() => {
+    const localACCost = localStorage.getItem("AUTO_CLICKER_COST");
+    if(localACCost == undefined) return 100;
+
+    return JSON.parse(localACCost);
+  })
+
+  useEffect(() => {
+    localStorage.setItem("AUTO_CLICKER_COST", JSON.stringify(autoClickerCost))
+  }, [autoClickerCost])
+
+  const [fallingLetters, setFallingLetters] = useState([])
+
   const prevLettersRef = useRef([]);
 
   const router = useRouter(); // Initialize the useRouter hook
@@ -18,7 +52,7 @@ export default function Home() {
 
   const handleClick = (e) => {
     e.preventDefault(); // Prevent the default behavior of the button click
-    setNum(num + 1);
+    setLetters(_letters + 1);
 
     // Generate a random letter (a-z)
     const randomLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
@@ -26,31 +60,31 @@ export default function Home() {
     // Add the random letter to the fallingLetters array
     setFallingLetters((prev) => [...prev, { letter: randomLetter, falling: true }]);
 
-    // Update the previous letters ref
+    // Update the previous _letters ref
     prevLettersRef.current = [...prevLettersRef.current, randomLetter];
   };
 
   useEffect(() => {
-    // Clear the falling letters after a delay
+    // Clear the falling _letters after a delay
     const clearFallingLetters = setTimeout(() => {
       setFallingLetters([]);
     }, 1050); // Adjust the delay as needed
 
-    // Clear the falling letters when the component unmounts or when a new letter is spawned
+    // Clear the falling _letters when the component unmounts or when a new letter is spawned
     return () => clearTimeout(clearFallingLetters);
   }, []);
 
   const handlePurchaseAutoClicker = () => {
-    if (num >= autoClickerCost) {
+    if (_letters >= autoClickerCost) {
       setAutoClickers((prev) => prev + 1);
-      setNum((prev) => prev - autoClickerCost);
+      setLetters((prev) => prev - autoClickerCost);
       setAutoClickerCost((prev) => Math.ceil(prev * 1.05)); // Increase cost for the next auto clicker
     }
   };
 
   useEffect(() => {
     const autoClickerInterval = setInterval(() => {
-      setNum((prev) => Number((prev + autoClickers * 0.02).toFixed(2))); // Add 0.02 to num for each auto clicker every millisecond
+      setLetters((prev) => Number((prev + autoClickers * 0.02).toFixed(2))); // Add 0.02 to _letters for each auto clicker every millisecond
     }, 5); // Set the interval to 1 ms
 
     return () => clearInterval(autoClickerInterval);
@@ -82,15 +116,18 @@ elementsToChangeFont.forEach(element => {
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '20px' }}>
-        Letters spawned: {num}
+        Letters spawned: 
+      </div>
+
+      <div style={{ position: 'fixed', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
+        {_letters}
       </div>
 
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
         {fallingLetters.map((fallingLetter, index) => (
-        fallingLetter.falling && ( // Render only falling letters
+        fallingLetter.falling && ( // Render only falling _letters
           <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-key={index}
+            key={index}
             style={{
               position: 'absolute',
               top: `${Math.random() * -200}px`,
@@ -118,8 +155,6 @@ key={index}
           >
             WordleMaxx
           </button>
-
-          {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 <button
             onClick={handlePurchaseAutoClicker}
             style={{

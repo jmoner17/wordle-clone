@@ -351,13 +351,14 @@
   font-size: 24px;
   color: var(--dark-text-color);
 }
+/*
 .theme-button {
   position: absolute;
   top: 50px;
   left: 0;
   padding: 0.5rem 1rem;
-  border: 1px; /* Assuming this is meant to be the border width, add a style like solid or dashed */
-  margin: 1rem; /* Adjust the margin as needed */
+  border: 1px; //Assuming this is meant to be the border width, add a style like solid or dashed 
+  margin: 1rem; //Adjust the margin as needed 
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -377,8 +378,8 @@
 
 .moved-button {
   position: absolute;
-  top: 100px; /* Adjust the value based on your requirements */
-}
+  top: 100px; //Adjust the value based on your requirements 
+}*/
 
 .flip {
   animation: flip 500ms ease forwards;

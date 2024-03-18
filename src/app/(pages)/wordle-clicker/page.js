@@ -6,39 +6,51 @@ import { undo } from "draft-js/lib/EditorState";
 
 export default function Home() {
   const [_letters, setLetters] = useState(() => {
-    const localNum = localStorage.getItem("LETTERS");
-    if(localNum == null) return 0;
-
-    return JSON.parse(localNum);
-  })
+    if(typeof window !== 'undefined') {
+      const localNum = localStorage.getItem("LETTERS");
+      if(localNum == null) return 0;
+      return JSON.parse(localNum);
+    }
+    return 0;
+  });
 
   useEffect(() => {
-    localStorage.setItem("LETTERS", JSON.stringify(_letters))
-  }, [_letters])
+    if(typeof window !== 'undefined') {
+      localStorage.setItem("LETTERS", JSON.stringify(_letters));
+    }
+  }, [_letters]);
 
  
 
   const [autoClickers, setAutoClickers] = useState(() => {
-    const localACCount = localStorage.getItem("AUTO_CLICKERS");
-    if(localACCount == undefined) return 0;
-
-    return JSON.parse(localACCount);
-  })
+    if(typeof window !== 'undefined') {
+      const localACCount = localStorage.getItem("AUTO_CLICKERS");
+      if(localACCount == undefined) return 0;
+      return JSON.parse(localACCount);
+    }
+    return 0;
+  });
 
   useEffect(() => {
-    localStorage.setItem("AUTO_CLICKERS", JSON.stringify(autoClickers))
-  }, [autoClickers])
+    if(typeof window !== 'undefined') {
+      localStorage.setItem("AUTO_CLICKERS", JSON.stringify(autoClickers));
+    }
+  }, [autoClickers]);
 
   const [autoClickerCost, setAutoClickerCost] = useState(() => {
-    const localACCost = localStorage.getItem("AUTO_CLICKER_COST");
-    if(localACCost == undefined) return 100;
-
-    return JSON.parse(localACCost);
-  })
+    if(typeof window !== 'undefined') {
+      const localACCost = localStorage.getItem("AUTO_CLICKER_COST");
+      if(localACCost == undefined) return 100;
+      return JSON.parse(localACCost);
+    }
+    return 100;
+  });
 
   useEffect(() => {
-    localStorage.setItem("AUTO_CLICKER_COST", JSON.stringify(autoClickerCost))
-  }, [autoClickerCost])
+    if(typeof window !== 'undefined') {
+      localStorage.setItem("AUTO_CLICKER_COST", JSON.stringify(autoClickerCost));
+    }
+  }, [autoClickerCost]);
 
   const [fallingLetters, setFallingLetters] = useState([])
 

@@ -11,18 +11,15 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-/**
- * *************************************************
- *                                                 *
- *                 GLOBAL CONSTANTS                *
- *                                                 *
- * *************************************************
- */
+
+// *************************************************
+//                                                 *
+//                 GLOBAL CONSTANTS                *
+//                                                 *
+// *************************************************
 
 const MAX_ATTEMPTS = 6;
 const WORD_LENGTH = 5;
-
-
 
 
 //Generates the pub private keypair
@@ -235,9 +232,7 @@ export default async function handler(req, res) {
             if (!actualWord) {
                 return res.status(200).json({ isActualWord: false });
             }
-            //! we should consider if this should be an await function or determine if there is enough time 
-            //!costed by the other functions that this isn't an issue
-
+            
             const[feedback] = await Promise.all([
                 getFeedback(guess, targetWord),
                 updateAttempts(publicKey, currentAttempts_DO_NOT_USE)  

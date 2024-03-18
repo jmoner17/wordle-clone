@@ -14,6 +14,10 @@ const ClientComponent = ({ children }) => {
         router.push('/wordle-clicker'); // Specify the path to your "wordle-clicker" page
     };
 
+    const navigateRot = () => {
+    router.push('./rot');
+  };
+
     const ROW_SIZE = 6;
     const LETTER_SIZE = 5;
 
@@ -269,9 +273,18 @@ const ClientComponent = ({ children }) => {
             <button
       onClick={navigateToWordleClicker}
       className={"theme-button"}
-    >
+            >
       Go to Wordle Clicker
             </button>
+
+            <button
+        onClick={navigateRot}
+        className={"theme-button moved-button"}
+            >
+        Go To Rot
+            </button>
+
+
             {isGameOver && (
             <GameOver
                 title="Game Over"

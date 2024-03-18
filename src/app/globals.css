@@ -374,6 +374,12 @@
   color: #fcfcfc; 
   border-color: #ffffff;
 }
+
+.moved-button {
+  position: absolute;
+  top: 100px; /* Adjust the value based on your requirements */
+}
+
 .flip {
   animation: flip 500ms ease forwards;
 }
@@ -434,6 +440,15 @@ button {
   width: 300px;
   border: 2px solid black;
   border-radius: 10px;
+}
+
+#myimage3 {
+  transition: 0.05s;
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  border: 1px solid black;
+  border-radius: 1px;
 }
 
 .bounds {

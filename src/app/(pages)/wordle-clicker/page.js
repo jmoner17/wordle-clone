@@ -50,6 +50,10 @@ export default function Home() {
     router.push('/home'); // Specify the path to your home page
   };
 
+  const navigateRot = () => {
+    router.push('./rot');
+  };
+
   const handleClick = (e) => {
     e.preventDefault(); // Prevent the default behavior of the button click
     setLetters(_letters + 1);
@@ -103,12 +107,17 @@ elementsToChangeFont.forEach(element => {
   return (
     
     <div>
-      {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
       <button
         onClick={navigateHome}
         className={"theme-button"}
       >
         Go Home
+      </button>
+      <button
+        onClick={navigateRot}
+        className={"theme-button moved-button"}
+      >
+        Go To Rot
       </button>
 
       <div style={{ textAlign: 'center', paddingTop: '20px' }}>

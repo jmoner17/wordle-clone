@@ -328,7 +328,7 @@ def simulate_game():
         "isMaxWin": isMaxWin
     }
 
-total_spins = 1000000
+total_spins = 100000000
 total_payout = 0
 total_bonus1 = 0
 total_bonus2 = 0

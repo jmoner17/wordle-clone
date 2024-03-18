@@ -5,6 +5,13 @@ WORKDIR /app
 
 # Copy package management files and install dependencies
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+
+ARG NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+ENV NEXT_TELEMETRY_DISABLED 1
+
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
@@ -14,7 +21,6 @@ RUN \
 
 # Copy the rest of the application code
 COPY . .
-
 # Build the Next.js application
 RUN \
   if [ -f yarn.lock ]; then yarn build; \

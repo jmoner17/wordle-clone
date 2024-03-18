@@ -118,8 +118,12 @@ elementsToChangeFont.forEach(element => {
         Letters spawned: 
       </div>
 
-      <div style={{ position: 'fixed', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
+      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
         {_letters}
+      </div>
+
+      <div className="clickers-box">
+          Auto Clickers Owned: {autoClickers}
       </div>
 
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
@@ -165,8 +169,9 @@ elementsToChangeFont.forEach(element => {
               marginLeft: '10px',
             }}
           >
-            Purchase Auto Clicker ({autoClickerCost} letters)
+            Purchase Auto Clicker ({autoClickerCost} letters) 
         </button>
+
       </div>
     </div>
   );

@@ -381,6 +381,16 @@
   top: 100px; //Adjust the value based on your requirements 
 }*/
 
+.clickers-box {
+  position: fixed;
+  top: 10%;
+  left: -10px;
+  padding: 0.5rem 1rem;
+  border: 1px; 
+  margin: 1rem; 
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .flip {
   animation: flip 500ms ease forwards;
 }

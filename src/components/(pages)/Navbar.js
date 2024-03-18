@@ -131,8 +131,8 @@ const Navbar = () => {
       </li>
       <li>
         <NavLink
-          href="/fortnite?"
-          active={pathname === "/fortnite"}
+          href="/rot"
+          active={pathname === "/rot"}
           onClick={() => setIsOpen(false)}
         >
           Fortnite?

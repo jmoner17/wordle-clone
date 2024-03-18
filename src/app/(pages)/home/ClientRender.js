@@ -4,19 +4,10 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useUser } from "@/utils/useClient";
 import LetterBox from "@/components/LetterBox"
 import GameOver from "@/components/GameOver"
-import { useRouter } from 'next/navigation';
 import debounce from 'lodash.debounce';
 
 const ClientComponent = ({ children }) => {
-    const router = useRouter(); // Initialize the useRouter hook
 
-    const navigateToWordleClicker = () => {
-        router.push('/wordle-clicker'); // Specify the path to your "wordle-clicker" page
-    };
-
-    const navigateRot = () => {
-    router.push('./rot');
-  };
 
     const ROW_SIZE = 6;
     const LETTER_SIZE = 5;
@@ -73,21 +64,6 @@ const ClientComponent = ({ children }) => {
 
     const [isActualWord, setIsActualWord] = useState(null);
 
-    const [isFlipped, setIsFlipped] = useState(false);
-
-    const createSession = useCallback(debounce(async () => {
-        const response = await fetch('/api/wordle-main-api', { method: 'POST' });
-        const data = await response.json();
-        if (data?.publicKey) {
-            localStorage.setItem('publicKey', data.publicKey);
-            setSessionData(data);
-        }
-        else {
-            setError('Error fetching token');
-        }
-
-    }, 250), []);
-  
     useEffect(() => {
         // load the game state locally 
         const loadGameState = () => {
@@ -212,7 +188,6 @@ const ClientComponent = ({ children }) => {
 
                             const newFeedback = [...feedback];
                             setIsActualWord(true);
-                            setIsFlipped(true); //timeToFlip UPDATED
                             setRow(row + 1);
                             if (row < ROW_SIZE - 1) {
                                 refRow.current[row + 1][0].current.focus();
@@ -224,7 +199,7 @@ const ClientComponent = ({ children }) => {
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
                             } else if (data.forceGameOver) {
-                                setGameOverMessage("You're BAD! Word was: "+data.targetWord);
+                                setGameOverMessage("You're BAD!");
                                 setIsGameOver(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
@@ -240,7 +215,7 @@ const ClientComponent = ({ children }) => {
                     }
                 };
                 getFeedback();
-                setIsFlipped(false);
+
             }
         };
 
@@ -256,42 +231,27 @@ const ClientComponent = ({ children }) => {
     return (
         <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
             <div>{children}</div>
-            <button
-      onClick={navigateToWordleClicker}
-      className={"theme-button"}
-            >
-      Go to Wordle Clicker
-            </button>
-
-            <button
-        onClick={navigateRot}
-        className={"theme-button moved-button"}
-            >
-        Go To Rot
-            </button>
-
-
             {isGameOver && (
-            <GameOver
-                title="Game Over"
-                message={gameOverMessage}
-                show={isGameOver}
-                onClose={resetGame}
-            />
+                <GameOver
+                    title="Game Over"
+                    message={gameOverMessage}
+                    show={isGameOver}
+                    onClose={resetGame}
+                />
             )}
-    
             <div className="flex-grow-0 w-full justify-center">
                 {letter.map((row, rowIndex) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
                     <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
                         {row.map((letter, letterIndex) => (
                             <LetterBox
+                                // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
                                 key={letterIndex}
                                 ref={refRow.current[rowIndex][letterIndex]}
                                 letter={letter}
                                 error={error}
                                 index={letterIndex}
                                 feedback={feedback[rowIndex][letterIndex]}
-                                timeToFlip={isFlipped}
                             />
                         ))}
                     </div>

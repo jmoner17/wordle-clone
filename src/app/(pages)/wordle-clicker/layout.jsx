@@ -1,6 +1,6 @@
 export const metadata = {
-    title: 'Wordle - example',
-    description: 'gamba gamba gamba',
+    title: 'Wordle Clicker',
+    description: 'Like Cookie Clicker But Way Worse',
   }
   
 

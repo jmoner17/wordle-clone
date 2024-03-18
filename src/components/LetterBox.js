@@ -1,7 +1,23 @@
-import React from "react";
+import { flip } from "lodash";
+import React, { useState, useEffect } from "react";
 
-const LetterBox = React.forwardRef(({ letter, error, feedback}, ref) => {
+const LetterBox = React.forwardRef(({ letter, error, feedback, timeToFlip}, ref) => {
 
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  useEffect(() => {
+    let timeoutId;
+
+    if (timeToFlip) {
+      // Trigger the flip after a delay
+      const delay = 500 * letter.index; // Assuming letter has an index property
+      timeoutId = setTimeout(() => {
+        setIsFlipped(true);
+      }, delay);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [timeToFlip, letter.index]);
   let color = ""; // Default color
   let border = "border-2";
   let shadow = "shadow-none";
@@ -20,7 +36,7 @@ const LetterBox = React.forwardRef(({ letter, error, feedback}, ref) => {
   }
 
     return (
-      <div className=" mb-2.5 lg:mb-2.5 xl:mb-2.5 2xl:mb-4">
+      <div className={`mb-2.5 lg:mb-2.5 xl:mb-2.5 2xl:mb-4 ${timeToFlip && isFlipped ? "flip" : ""} `}>
         <input
           type="text"
           value={letter}

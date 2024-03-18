@@ -13,7 +13,7 @@ const ClientComponent = ({children}) => {
 
     return (
         <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
-            meow
+           meow
         </main>
     );
 };

@@ -118,7 +118,7 @@ elementsToChangeFont.forEach(element => {
         Letters spawned: 
       </div>
 
-      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
+      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', right: '47%', marginTop: '20px', fontSize: '20px', transition: '0.3s' }}>
         {_letters}
       </div>
 

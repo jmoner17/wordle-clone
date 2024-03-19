@@ -322,12 +322,12 @@
 
 @keyframes fallingAnimation {
   0% {
-    transform: translateY(-50vh) rotate(0deg);
+    transform: translateY(5vh) rotate(0deg);
     opacity: 1;
   }
 
   100% {
-    transform: translateY(225vh) rotate(360deg);
+    transform: translateY(100vh) rotate(360deg);
     opacity: 0;
   }
 }
@@ -335,7 +335,7 @@
 .light .falling-letter {
   position: absolute;
   top: 0;
-  left: 50%;
+  left: 0;
   transform: translateX(-50%);
   animation: fallingAnimation 1s ease-out;
   font-size: 24px;
@@ -345,7 +345,7 @@
 .dark .falling-letter {
   position: absolute;
   top: 0;
-  left: 50%;
+  left: 0%;
   transform: translateX(-50%);
   animation: fallingAnimation 1s ease-out;
   font-size: 24px;
@@ -383,7 +383,7 @@
 
 .clickers-box {
   position: fixed;
-  top: 10%;
+  top: 10vh;
   left: -10px;
   padding: 0.5rem 1rem;
   border: 1px; 
@@ -427,12 +427,14 @@
   justify-content: center;
   font-size: 100px;
   font-weight: bolder;
+  z-index: 2;
 }
 
 button {
   padding: 5px 5px;
   border: 2px solid black;
   border-radius: 10px;
+  z-index: 1;
 }
 
 #myimage {
@@ -442,6 +444,7 @@ button {
   width: 200px;
   border: 2px solid black;
   border-radius: 10px;
+  z-index: 6;
 }
 
 #myimage2 {
@@ -451,7 +454,7 @@ button {
   width: 300px;
   border: 2px solid black;
   border-radius: 10px;
-  z-index: -1;
+  z-index: 1;
 }
 
 #myimage3 {
@@ -461,6 +464,7 @@ button {
   width: 40px;
   border: 1px solid black;
   border-radius: 1px;
+  z-index: 2;
 }
 
 .bounds {

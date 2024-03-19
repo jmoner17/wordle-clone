@@ -12,7 +12,6 @@ const GameOver = ({ title, message, show, onClose }) => {
             }}>
             <h2 className="text-primary-color dark:text-dark-primary-color">{title}</h2>
             <p className="text-secondary-color dark:text-dark-secondary-color">{message}</p>
-            {/* biome-ignore lint/a11y/useButtonType: <Annoying error> */}
             <button 
                 onClick={onClose} 
                 className="mt-5 px-4 py-2 text-lg cursor-pointer bg-accent-color text-light-text-color rounded dark:bg-dark-accent-color dark:text-dark-light-text-color"

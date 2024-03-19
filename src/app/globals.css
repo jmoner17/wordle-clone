@@ -451,6 +451,7 @@ button {
   width: 300px;
   border: 2px solid black;
   border-radius: 10px;
+  z-index: -1;
 }
 
 #myimage3 {

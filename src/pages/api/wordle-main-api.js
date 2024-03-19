@@ -263,7 +263,7 @@ export default async function handler(req, res) {
                     isActualWord: true,
                     isTargetWord: isTargetWord,
                     feedback: feedback,
-                    forceGameOver: forceGameOver,
+                    forceGameOver: true,
                     targetWord: targetWord,
                 });
             }

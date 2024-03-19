@@ -56,16 +56,6 @@ export default function Home() {
 
   const prevLettersRef = useRef([]);
 
-  const router = useRouter(); // Initialize the useRouter hook
-
-  const navigateHome = () => {
-    router.push('/home'); // Specify the path to your home page
-  };
-
-  const navigateRot = () => {
-    router.push('./rot');
-  };
-
   const handleClick = (e) => {
     e.preventDefault(); // Prevent the default behavior of the button click
     setLetters(_letters + 1);
@@ -119,19 +109,7 @@ elementsToChangeFont.forEach(element => {
   return (
     
     <div>
-      <button
-        onClick={navigateHome}
-        className={"theme-button"}
-      >
-        Go Home
-      </button>
-      <button
-        onClick={navigateRot}
-        className={"theme-button moved-button"}
-      >
-        Go To Rot
-      </button>
-
+      
       <div style={{ textAlign: 'center', paddingTop: '20px' }}>
         <h1 className="change-font-to-consolas" style={{ fontSize: '36px' }}>Wordle Clicker</h1>
       </div>
@@ -140,8 +118,12 @@ elementsToChangeFont.forEach(element => {
         Letters spawned: 
       </div>
 
-      <div style={{ position: 'fixed', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
+      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
         {_letters}
+      </div>
+
+      <div className="clickers-box">
+          Auto Clickers Owned: {autoClickers}
       </div>
 
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
@@ -163,7 +145,7 @@ elementsToChangeFont.forEach(element => {
         )
       ))}
 
-          {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+          
 <button
             onClick={handleClick}
             style={{
@@ -187,8 +169,9 @@ elementsToChangeFont.forEach(element => {
               marginLeft: '10px',
             }}
           >
-            Purchase Auto Clicker ({autoClickerCost} letters)
+            Purchase Auto Clicker ({autoClickerCost} letters) 
         </button>
+
       </div>
     </div>
   );

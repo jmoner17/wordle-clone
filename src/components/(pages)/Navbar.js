@@ -203,9 +203,6 @@ const Navbar = () => {
             <div className="lg:hidden text-xl flex flex-col items-center justify-center px-6 py-4 space-y-6">
               {navLinks}
             </div>
-            <div className="text-text-color dark:text-dark-text-color lg:hidden text-xl flex flex-col items-center justify-center px-6 py-4 space-y-6">
-              {socialLinks}
-            </div>
           </div>
         )}
       </div>

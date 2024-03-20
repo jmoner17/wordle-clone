@@ -199,7 +199,7 @@ const ClientComponent = ({ children }) => {
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
                             } else if (data.forceGameOver) {
-                                setGameOverMessage("You're BAD!");
+                                setGameOverMessage("You're BAD! Word Was: " + data.targetWord);
                                 setIsGameOver(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);

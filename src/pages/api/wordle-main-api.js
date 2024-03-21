@@ -7,23 +7,21 @@ import { pki } from 'node-forge';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
+// *************************************************
+// *                                               *
+// *               GLOBAL CONSTANTS                *
+// *                                               *
+// *************************************************
+
+const MAX_ATTEMPTS = 6;
+const WORD_LENGTH = 5;
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseServiceKey = process.env.NEXT_PRIVATE_SUPABASE_SERVICE_KEY
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 const supabase_service = createClient(supabaseUrl, supabaseServiceKey);
 const supabase_anon = createClient(supabaseUrl, supabaseAnonKey);
-
-
-// *************************************************
-//                                                 *
-//                 GLOBAL CONSTANTS                *
-//                                                 *
-// *************************************************
-
-const MAX_ATTEMPTS = 6;
-const WORD_LENGTH = 5;
-
 
 //Generates the pub private keypair
 //todo: rather than generating a massive key we will generate a singular less computationally intense hash

@@ -159,10 +159,11 @@ const Navbar = () => {
       <div className={`${isOpen ? 'flex flex-col items-center justify-between' : ''} container mx-auto h-full`}>
         <div className="flex justify-between items-center w-full">
           {/* Hamburger menu */}
-          <div className="z-20 lg:hidden">
+          <div className="z-10 lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="focus:outline-none"
+              type="button"
             >
               <svg
                 className="w-6 h-6 text-text-color dark:text-dark-text-color"
@@ -186,6 +187,8 @@ const Navbar = () => {
           <Logo href="/home" onClick={() => setIsOpen(false)}>
             WordleMaxxers
           </Logo>
+          {/* fake box for balancing */}
+          <div className="z-20 w-6 h-6 lg:hidden"/> 
 
           <div className="flex items-center">
             <div className="lg:flex items-center hidden">
@@ -203,6 +206,9 @@ const Navbar = () => {
             <div className="lg:hidden text-xl flex flex-col items-center justify-center px-6 py-4 space-y-6">
               {navLinks}
             </div>
+
+            <div className="flex space-x-4 lg:ml-12 text-text-color dark:text-dark-text-color">
+              </div>
           </div>
         )}
       </div>

@@ -15,8 +15,8 @@ const ServerComponent = async () => {
 
 
   return (
-    <div className=" flex-col items-center justify-center hidden lg:block">
-      <div className="container flex flex-col items-center justify-center h-auto w-auto mt-20 p-2">
+    <div className=" flex-col items-center justify-center hidden md:block">
+      <div className="container flex flex-col items-center justify-center h-auto w-auto mt-12 p-7">
         <div className="flex items-center justify-center md:space-x-1 lg:space-x-1 xl:space-x-2">
           <InputComponent bgColor="green" placeholder="W" readOnly />
           <InputComponent bgColor="yellow" placeholder="O" readOnly />

@@ -36,7 +36,7 @@ const LetterBox = React.forwardRef(({ letter, error, feedback, timeToFlip}, ref)
   }
 
     return (
-      <div className={`mb-2.5 lg:mb-2.5 xl:mb-2.5 2xl:mb-4 ${timeToFlip && isFlipped ? "flip" : ""} `}>
+      <div className={`mb-2.5 lg:mb-1 xl:mb-2.5 2xl:mb-4 ${timeToFlip && isFlipped ? "flip" : ""} `}>
         <input
           type="text"
           value={letter}

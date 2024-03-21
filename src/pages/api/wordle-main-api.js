@@ -7,20 +7,21 @@ import { pki } from 'node-forge';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-
 // *************************************************
-//                                                 *
-//                 GLOBAL CONSTANTS                *
-//                                                 *
+// *                                               *
+// *               GLOBAL CONSTANTS                *
+// *                                               *
 // *************************************************
 
 const MAX_ATTEMPTS = 6;
 const WORD_LENGTH = 5;
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseServiceKey = process.env.NEXT_PRIVATE_SUPABASE_SERVICE_KEY
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+const supabase_service = createClient(supabaseUrl, supabaseServiceKey);
+const supabase_anon = createClient(supabaseUrl, supabaseAnonKey);
 
 //Generates the pub private keypair
 //todo: rather than generating a massive key we will generate a singular less computationally intense hash
@@ -37,7 +38,7 @@ async function getNewTarget() {
     const randomId = generateRandomNumber();
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabase_anon
             .from("valid_words")
             .select("word")
             .eq('id', randomId)
@@ -57,7 +58,7 @@ async function getNewTarget() {
 //! in supabase the rule literally allows anyone to insert and read the db. very bad methinks ;)
 //todo: setup a service role for this specific function
 async function insertSession(word, publicKeyPem) {
-    const { error } = await supabase
+    const { error } = await supabase_service
         .from('sessions')
         .insert([
             { word: word.toUpperCase(), key: publicKeyPem }
@@ -74,7 +75,7 @@ async function insertSession(word, publicKeyPem) {
 
 async function isActualWord(guess) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabase_anon
             .from("valid_words")
             .select("word")
             .eq('word', guess.toLowerCase())
@@ -96,7 +97,7 @@ async function isActualWord(guess) {
 async function getTarget(publicKey) {
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabase_service
             .from("sessions")
             .select("word")
             .eq('key', publicKey)
@@ -116,7 +117,7 @@ async function getTarget(publicKey) {
 async function getAttempts(publicKey) {
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabase_service
             .from("sessions")
             .select("attempts")
             .eq('key', publicKey)
@@ -136,7 +137,7 @@ async function getAttempts(publicKey) {
 async function updateAttempts(publicKey, currentAttempts) {
 
 
-    const { error } = await supabase
+    const { error } = await supabase_service
         .from('sessions')
         .update([
             { attempts: currentAttempts + 1}
@@ -153,7 +154,7 @@ async function updateAttempts(publicKey, currentAttempts) {
 //! if a user is able ot call this function then they can get infinite attempts
 async function resetAttempts(publicKey) {
 
-    const { error } = await supabase
+    const { error } = await supabase_service
         .from('sessions')
         .update([
             {attempts: 0}
@@ -170,7 +171,7 @@ async function resetAttempts(publicKey) {
 
 async function resetTarget(publicKey) {
     const newTarget = await getNewTarget();
-    const { error } = await supabase
+    const { error } = await supabase_service
         .from('sessions')
         .update([
             { word: newTarget}

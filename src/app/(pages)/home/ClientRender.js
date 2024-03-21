@@ -5,6 +5,7 @@ import { useUser } from "@/utils/useClient";
 import LetterBox from "@/components/LetterBox"
 import GameOver from "@/components/GameOver"
 import debounce from 'lodash.debounce';
+import { addEventListener, removeEventListener } from 'next/app';
 
 const ClientComponent = ({ children }) => {
 
@@ -103,9 +104,12 @@ const ClientComponent = ({ children }) => {
         };
 
         window.addEventListener('beforeunload', saveGameState);
+        window.addEventListener('routeChangeStart', saveGameState);
 
         return () => {
             window.removeEventListener('beforeunload', saveGameState);
+            window.removeEventListener('routeChangeStart', saveGameState);
+            
         };
     }, [letter, row, feedback, isTargetWord, isGameOver, gameOverMessage, error]);
 
@@ -199,7 +203,7 @@ const ClientComponent = ({ children }) => {
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
                             } else if (data.forceGameOver) {
-                                setGameOverMessage("You're BAD! Word Was: " + data.targetWord);
+                                setGameOverMessage(`You're BAD! Word Was: ${data.targetWord}`);
                                 setIsGameOver(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);

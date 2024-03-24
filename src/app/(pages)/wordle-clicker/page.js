@@ -74,7 +74,7 @@ export default function Home() {
     // Clear the falling _letters after a delay
     const clearFallingLetters = setTimeout(() => {
       setFallingLetters([]);
-    }, 1050); // Adjust the delay as needed
+    }, 1); // Adjust the delay as needed
 
     // Clear the falling _letters when the component unmounts or when a new letter is spawned
     return () => clearTimeout(clearFallingLetters);
@@ -118,7 +118,7 @@ elementsToChangeFont.forEach(element => {
         Letters spawned: 
       </div>
 
-      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
+      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', right: '47%', marginTop: '20px', fontSize: '20px', transition: '0.3s' }}>
         {_letters}
       </div>
 

@@ -49,7 +49,8 @@ export default function Fortnite() {
     <>
       <div className="body">
         <br></br>
-        <h3>Fortnite???</h3>
+        <h3 style =  {{zIndex: '5'}} 
+        >Fortnite???</h3>
       </div>
       <div className="centered">
         <div className="main">
@@ -76,10 +77,10 @@ export default function Fortnite() {
           <br></br>
           <br></br>
           <br></br>
-          <button>Chat is this real: {count}</button>
+          <button style = {{zIndex: '5'}}>Chat is this real: {count}</button>
           <br></br>
           <br></br>
-          <button onClick={resetClick}>Reset Rot</button>
+          <button style = {{zIndex: '5'}} onClick={resetClick}>Reset Rot</button>
         </div>
       </div>
       <div onClick={doClick}>
@@ -90,7 +91,7 @@ export default function Fortnite() {
         ></input>
       </div>
           <div className="bounds">
-            <img
+            <img style = {{zIndex: '-1'}}
               class="image"
               src="http://3.bp.blogspot.com/-CXed5bIgZ7M/U5iKD46rCfI/AAAAAAAAIzA/nMIOW4njjfo/s1600/holy-moly-smiley.png"
               alt=""

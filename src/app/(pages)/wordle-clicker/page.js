@@ -25,7 +25,7 @@ export default function Home() {
   const [autoClickers, setAutoClickers] = useState(() => {
     if(typeof window !== 'undefined') {
       const localACCount = localStorage.getItem("AUTO_CLICKERS");
-      if(localACCount == undefined) return 0;
+      if(localACCount === undefined) return 0;
       return JSON.parse(localACCount);
     }
     return 0;
@@ -40,7 +40,7 @@ export default function Home() {
   const [autoClickerCost, setAutoClickerCost] = useState(() => {
     if(typeof window !== 'undefined') {
       const localACCost = localStorage.getItem("AUTO_CLICKER_COST");
-      if(localACCost == undefined) return 100;
+      if(localACCost === undefined) return 100;
       return JSON.parse(localACCost);
     }
     return 100;
@@ -74,7 +74,7 @@ export default function Home() {
     // Clear the falling _letters after a delay
     const clearFallingLetters = setTimeout(() => {
       setFallingLetters([]);
-    }, 1); // Adjust the delay as needed
+    }, 1050); // Adjust the delay as needed
 
     // Clear the falling _letters when the component unmounts or when a new letter is spawned
     return () => clearTimeout(clearFallingLetters);
@@ -118,7 +118,7 @@ elementsToChangeFont.forEach(element => {
         Letters spawned: 
       </div>
 
-      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', right: '47%', marginTop: '20px', fontSize: '20px', transition: '0.3s' }}>
+      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
         {_letters}
       </div>
 

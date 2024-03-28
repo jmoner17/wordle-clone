@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - next-js
 
 jobs:
   build-and-run-next-net5:

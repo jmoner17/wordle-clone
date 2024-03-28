@@ -3,10 +3,8 @@ name: Docker Build and Run
 on:
   push:
     branches:
-      - "*"
-  pull_request:
-    branches:
-      - "*"
+      - main
+      - next-js
 
 jobs:
   build-and-run-next-net5:

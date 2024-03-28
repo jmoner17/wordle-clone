@@ -52,7 +52,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:latest # Use your custom nginx image if necessary
+          image: jjmoner17/nginx-net5:latest
           ports:
             - containerPort: 8080
 ---
@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
         - name: next-net5
-          image: "your-image-name:latest" # Specify your image
+          image: jjmoner17/next-net5:latest
           ports:
             - containerPort: 3000
           env:

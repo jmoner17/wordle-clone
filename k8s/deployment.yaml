@@ -1,0 +1,149 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: net5-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+  namespace: net5-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:latest
+          command: ["tunnel", "run"]
+          env:
+            - name: TUNNEL_TOKEN
+              value: "Your-Tunnel-Token"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudflared
+  namespace: net5-app
+spec:
+  selector:
+    app: cloudflared
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: net5-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: jjmoner17/nginx-net5:latest
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: net5-app
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: next-net5
+  namespace: net5-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: next-net5
+  template:
+    metadata:
+      labels:
+        app: next-net5
+    spec:
+      containers:
+        - name: next-net5
+          image: jjmoner17/next-net5:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_SUPABASE_URL
+              value: "your-supabase-url"
+            - name: NEXT_PUBLIC_SUPABASE_ANON_KEY
+              value: "your-supabase-anon-key"
+            - name: NEXT_PRIVATE_SUPABASE_SERVICE_KEY
+              value: "your-supabase-service-key"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: next-net5
+  namespace: net5-app
+spec:
+  selector:
+    app: next-net5
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cloudflared-to-nginx
+  namespace: net5-app
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: cloudflared
+    ports:
+    - protocol: TCP
+      port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nginx-to-next-net5
+  namespace: net5-app
+spec:
+  podSelector:
+    matchLabels:
+      app: next-net5
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: nginx
+    ports:
+    - protocol: TCP
+      port: 3000

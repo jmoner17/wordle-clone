@@ -71,7 +71,7 @@ jobs:
           context: ./
           file: ./prod.Dockerfile
           push: true
-          tags: j${{ secrets.DOCKER_HUB_USERNAME }}/next-net5:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/next-net5:latest
           build-args: |
             NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
             NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}

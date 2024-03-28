@@ -45,6 +45,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./nginx
-          file: Dockerfile
+          file: ./nginx/Dockerfile
           load: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/nginx-net5:latest

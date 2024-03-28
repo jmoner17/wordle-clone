@@ -91,6 +91,8 @@ jobs:
       - name: Push Nginx Docker Image
         uses: docker/build-push-action@v5
         with:
+          context: ./nginx
+          file: ./nginx/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/nginx-net5:latest
 #  deploy:

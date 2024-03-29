@@ -20,6 +20,7 @@ const ClientComponent = ({ children }) => {
     */
     const [loading, setLoading] = useState(true);
 
+
     /**
     * @var {string} error
     * @brief self explanatory. used to store and print errors.
@@ -27,10 +28,8 @@ const ClientComponent = ({ children }) => {
     const [error, setError] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpError = localStorage.getItem("error");
-            if (tmpError === undefined) {
-                return () => {
-                    '';
-                };
+            if (tmpError == null) {
+                return '';
             }
             return JSON.parse(tmpError);
         }
@@ -43,6 +42,7 @@ const ClientComponent = ({ children }) => {
         }
     }, [error]);
 
+
     /**
      * @var {feedback} feedback
      * @brief sets box colors based on wordle rules
@@ -50,10 +50,8 @@ const ClientComponent = ({ children }) => {
     const [feedback, setFeedback] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpFeedback = localStorage.getItem("feedback");
-            if (tmpFeedback === null) {
-                return () => {
-                    Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
-                };
+            if (tmpFeedback == null) {
+                return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
             }
             return JSON.parse(tmpFeedback);
         }
@@ -66,18 +64,17 @@ const ClientComponent = ({ children }) => {
         }
     }, [feedback]);
 
+
     /**
-  * @var {char} letter
-  * @brief this is the letter that is held in each letterbox
-  *        A 2D array is created to initialize the entire board
-  */
-    const [letter, setLetter] = useState(() => {
+     * @var {char} letter
+     * @brief this is the letter that is held in each letterbox
+     *        A 2D array is created to initialize the entire board
+     */
+    const  [letter, setLetter] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpLetter = localStorage.getItem("letter");
-            if (tmpLetter === null) {
-                return () => {
-                    Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''))
-                };
+            if (tmpLetter == null) {
+                return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
             }
             return JSON.parse(tmpLetter);
         }
@@ -90,16 +87,20 @@ const ClientComponent = ({ children }) => {
         }
     }, [letter]);
 
+
     /**
     * @var {refRow}
     * @brief refRow function
     */
-    const refRow = useRef(() => {
+    const refRow = useRef([]);
+
+    useEffect(() => {
         if (typeof window !== 'undefined') {
-            letter.map(row => row.map(() => React.createRef()))
+            const rows = Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill().map(() => React.createRef()));
+            refRow.current = rows;
         }
-        return letter.map(row => row.map(() => React.createRef()));
-    });
+    }, []);
+
 
     /**
      * @var {int} row
@@ -109,10 +110,8 @@ const ClientComponent = ({ children }) => {
     const [row, setRow] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpRow = localStorage.getItem("row");
-            if (tmpRow === undefined) {
-                return () => {
-                    0;
-                };
+            if (tmpRow == null) {
+                return 0;
             }
             return JSON.parse(tmpRow);
         }
@@ -125,16 +124,15 @@ const ClientComponent = ({ children }) => {
         }
     }, [row]);
 
+
     /**
      * @var todo
      */
     const [isTargetWord, setIsTargetWord] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpTargetWord = localStorage.getItem("isTargetWord");
-            if (tmpTargetWord === undefined) {
-                return () => {
-                    null;
-                };
+            if (tmpTargetWord == null) {
+                return null;
             }
             return JSON.parse(tmpTargetWord);
         }
@@ -147,18 +145,17 @@ const ClientComponent = ({ children }) => {
         }
     }, [isTargetWord]);
 
-  /**
-  * @var {isGameOver} isGameOver
-  * @brief determines if a win or lose condition is met. when the game is ended, the game over component is 
-  *        presented.
-  */
+
+    /**
+    * @var {isGameOver} isGameOver
+    * @brief determines if a win or lose condition is met. when the game is ended, the game over component is 
+    *        presented.
+    */
     const [isGameOver, setIsGameOver] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpIsGameOver = localStorage.getItem("isGameOver");
-            if (tmpIsGameOver === undefined) {
-                return () => {
-                    false;
-                };
+            if (tmpIsGameOver == null) {
+                return false;
             }
             return JSON.parse(tmpIsGameOver);
         }
@@ -171,16 +168,15 @@ const ClientComponent = ({ children }) => {
         }
     }, [isGameOver]);
 
+
     /**
      * @var todo
      */
     const [gameOverMessage, setGameOverMessage] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpGameOverMessage = localStorage.getItem("gameOverMessage");
-            if (tmpGameOverMessage === undefined) {
-                return () => {
-                    '';
-                };
+            if (tmpGameOverMessage == null) {
+                return '';
             }
             return JSON.parse(tmpGameOverMessage);
         }
@@ -193,6 +189,7 @@ const ClientComponent = ({ children }) => {
         }
     }, [gameOverMessage]);
 
+    
     /**
      * @var todo
      */
@@ -233,7 +230,7 @@ const ClientComponent = ({ children }) => {
 
                     //sets the keystroke to the next letterbox.
                     const nextFocusIndex = (nextIndex + 1 < LETTER_SIZE) ? nextIndex + 1 : nextIndex;
-                    refRow.current[row][nextFocusIndex].current.focus();
+                    refRow.current?.[row][nextFocusIndex].current?.focus();
                 }
             }
             //if backspace is pressed and the row isn't empty, then remove the letter int he currently focused letterbox
@@ -244,7 +241,7 @@ const ClientComponent = ({ children }) => {
                     const newLetter = [...letter];
                     newLetter[row][prevIndex] = '';
                     setLetter(newLetter);
-                    refRow.current[row][prevIndex].current.focus();
+                    refRow.current?.[row][prevIndex].current?.focus();
                 }
             }
             //if enter is pressed, and the game isn't over. proceed with processing the word typed in the current row
@@ -319,37 +316,35 @@ const ClientComponent = ({ children }) => {
 
 
     return (
-        typeof window !== 'undefined' ? (
-            <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
-                <div>{children}</div>
-                {isGameOver && (
-                    <GameOver
-                        title="Game Over"
-                        message={gameOverMessage}
-                        show={isGameOver}
-                        onClose={resetGame}
-                    />
-                )}
-                <div className="flex-grow-0 w-full justify-center">
-                    {letter.map((row, rowIndex) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
-                        <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
-                            {row.map((letter, letterIndex) => (
-                                <LetterBox
-                                    // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
-                                    key={letterIndex}
-                                    ref={refRow.current[rowIndex][letterIndex]}
-                                    letter={letter}
-                                    error={error}
-                                    index={letterIndex}
-                                    feedback={feedback[rowIndex][letterIndex]}
-                                />
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            </main>
-        ) : 0
+        <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
+            <div>{children}</div>
+            {isGameOver && (
+                <GameOver
+                    title="Game Over"
+                    message={gameOverMessage}
+                    show={isGameOver}
+                    onClose={resetGame}
+                />
+            )}
+            <div className="flex-grow-0 w-full justify-center">
+                {letter.map((row, rowIndex) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
+                    <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
+                        {row.map((letter, letterIndex) => (
+                            <LetterBox
+                                // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
+                                key={letterIndex}
+                                ref={refRow.current?.[rowIndex]?.[letterIndex]}
+                                letter={letter}
+                                error={error}
+                                index={letterIndex}
+                                feedback={feedback[rowIndex][letterIndex]}
+                            />
+                        ))}
+                    </div>
+                ))}
+            </div>
+        </main>
     );
 };
 

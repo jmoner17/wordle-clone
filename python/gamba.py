@@ -29,13 +29,19 @@ def choose_target_word(): #good
 
 def generate_board(target_word): #good
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
-    possible_letters = [letter for letter in alphabet]
+    possible_letters = [letter for letter in alphabet if letter not in target_word]
+
+    unique_letters_in_word = len(set(target_word))
+    chance_of_target_letter = unique_letters_in_word / 26 
     
-    # Combine the target word letters and additional letters
-    board_letters = random.choices(possible_letters, k=26)
     
     # Create the board by randomly choosing from board_letters for each cell
-    board = [[random.choice(board_letters) for _ in range(5)] for _ in range(4)]
+    board = []
+    for _ in range(6):  # For each row
+        row = []
+        for _ in range(5):  # For each column
+            row.append(random.choice(target_word if random.random() < chance_of_target_letter else possible_letters))
+        board.append(row)
     
     return board
 
@@ -54,7 +60,7 @@ def generate_board_bonus_1(target_word, wild_positions):
     chance_of_target_letter = max(0.00001, initial_chance_of_target_letter - len(wild_positions) * chance_reduction_factor)
 
     board = []
-    for _ in range(4):  # For each row
+    for _ in range(6):  # For each row
         row = []
         for _ in range(5):  # For each column
             row.append(random.choice(target_word if random.random() < chance_of_target_letter else possible_letters))
@@ -70,12 +76,12 @@ def generate_board_bonus_2(target_word): #good
     total_letters = len(alphabet)
     initial_chance_of_target_letter = unique_letters_in_word / total_letters
 
-    chance_of_target_letter = max(0.00001, initial_chance_of_target_letter / 1.45); 
+    chance_of_target_letter = max(0.00001, initial_chance_of_target_letter / 1.55); 
     
     
     # Create the board by randomly choosing from board_letters for each cell
     board = []
-    for _ in range(4):  # For each row
+    for _ in range(6):  # For each row
         row = []
         for _ in range(5):  # For each column
             row.append(random.choice(target_word if random.random() < chance_of_target_letter else possible_letters))
@@ -85,7 +91,7 @@ def generate_board_bonus_2(target_word): #good
 
 def count_wilds(board, target_word): #good
     wilds_1x, wilds_3x = 0, 0
-    for row in range(4):  # 4 rows in the board
+    for row in range(6):  # 4 rows in the board
         for col in range(5):  # 5 columns in the board
             # Check if the current column is within the bounds of the board's row.
             if col < len(board[row]):  
@@ -106,7 +112,7 @@ def find_all_connections(board, row, col, target_word, current_path, all_connect
         return
 
     # Recursive exploration
-    if 0 <= row < 4:  # Ensure row is within bounds
+    if 0 <= row < 6:  # Ensure row is within bounds
         current_position = BoardPosition(row, col, "1x") if 0 <= col < 5 else None
         letter = board[current_position.row][current_position.col]
         if letter == target_word[col]:
@@ -120,7 +126,7 @@ def find_all_connections(board, row, col, target_word, current_path, all_connect
             
         for row_delta in [-1, 0, 1]:  # Move up and down
             new_row = row + row_delta
-            if 0 <= new_row < 4:  # Ensure new row is within bounds
+            if 0 <= new_row < 6:  # Ensure new row is within bounds
                 #WHAT IN THE ACTUAL FUCK YOU MEAN STrInGs ArEnt mUtABle iN pYtHOn that is so fucking stupid
                 find_all_connections(board, new_row, col + 1, target_word, new_path, all_connections)
 
@@ -133,7 +139,7 @@ def find_all_connections_bonus_1(board, row, col, target_word, current_path, all
         return
 
     # Recursive exploration
-    if 0 <= row < 4:  # Ensure row is within bounds
+    if 0 <= row < 6:  # Ensure row is within bounds
         current_position = BoardPosition(row, col, "1x") if 0 <= col < 5 else None
         letter = board[current_position.row][current_position.col]
         if letter == target_word[col]:
@@ -163,7 +169,7 @@ def find_all_connections_bonus_2(board, row, col, target_word, current_path, all
         return
 
     # Recursive exploration
-    if 0 <= row < 4:  # Ensure row is within bounds
+    if 0 <= row < 6:  # Ensure row is within bounds
         current_position = BoardPosition(row, col, "1x") if 0 <= col < 5 else None
         letter = board[current_position.row][current_position.col]
         
@@ -193,13 +199,13 @@ def find_all_connections_bonus_2(board, row, col, target_word, current_path, all
             
         for row_delta in [-1, 0, 1]:  # Move up and down
             new_row = row + row_delta
-            if 0 <= new_row < 4:  # Ensure new row is within bounds
+            if 0 <= new_row < 6:  # Ensure new row is within bounds
                 #WHAT IN THE ACTUAL FUCK YOU MEAN STrInGs ArEnt mUtABle iN pYtHOn that is so fucking stupid
                 find_all_connections_bonus_2(board, new_row, col + 1, target_word, new_path, all_connections)
 
 
-def bonus_round_1(target_word, wilds_3x):
-    free_spins = 6 + (-9 + (wilds_3x * 3))
+def bonus_round_1(target_word, wilds_1x, wilds_3x):
+    free_spins = 6 + (-10 + ((wilds_1x + wilds_3x) * 2))
     #free_spins = 6
     total_bonus_payout = 0
     wild_positions = set()
@@ -207,7 +213,7 @@ def bonus_round_1(target_word, wilds_3x):
     for _ in range(free_spins):
         board = generate_board_bonus_1(target_word, wild_positions)  # Generate new board for each spin
         # Apply 3x wilds directly based on target_word positions
-        for row in range(4):
+        for row in range(6):
             for col in range(5):
                 if board[row][col] == target_word[col]:  
                     wild_positions.add((row, col))
@@ -216,7 +222,7 @@ def bonus_round_1(target_word, wilds_3x):
             board[row][col] = "3x"
 
         all_connections = set()
-        for row in range(4):
+        for row in range(6):
             find_all_connections_bonus_1(board, row, 0, target_word, [], all_connections)
 
         total_bonus_payout += calculate_total_payout_multiplier(all_connections)
@@ -227,14 +233,14 @@ def bonus_round_1(target_word, wilds_3x):
         
     return total_bonus_payout, isMaxWin
 
-def bonus_round_2(target_word, wilds_1x, wilds_3x): #good
+def bonus_round_2(target_word, wilds_3x): #good
     isMaxWin = False
     # Define the multipliers and their adjusted probabilities
     multipliers = ["1x", "3x", "5x", "10x", "20x", "50x", "100x"]
     #! THE SUM OF THESE PROBABILITIES MUST EQUAL 1
     probabilities = [0.6, 0.25, 0.083, 0.04, 0.02, 0.005, 0.002] 
     #adjust this based on entrance condition
-    free_spins = 6 + (-18 + ((wilds_1x + wilds_3x) * 2))
+    free_spins = 6 + (-12 + (wilds_3x * 3))
     total_bonus_payout = 0
     for _ in range(free_spins):
         board = generate_board_bonus_2(target_word)  
@@ -242,7 +248,7 @@ def bonus_round_2(target_word, wilds_1x, wilds_3x): #good
         # Check each column for 3x wilds
         for col in range(5):
             column_has_3x_wild = False
-            for row in range(4):
+            for row in range(6):
                 if board[row][col] == target_word[col]:  # If the letter matches the target word position
                     column_has_3x_wild = True
                     break
@@ -252,11 +258,11 @@ def bonus_round_2(target_word, wilds_1x, wilds_3x): #good
                 column_multiplier = random.choices(multipliers, probabilities, k=1)[0]
 
                 # Replace entire column with the chosen multiplier
-                for row in range(4):
+                for row in range(6):
                     board[row][col] = column_multiplier  # Setting the multiplier for the column
 
         all_connections = set()
-        for row in range(4):
+        for row in range(6):
             find_all_connections_bonus_2(board, row, 0, target_word, [], all_connections)
 
         total_bonus_payout += calculate_total_payout_multiplier(all_connections)
@@ -301,23 +307,23 @@ def simulate_game():
     all_connections = set()
     isMaxWin = False
     
-    for row in range(4):
+    for row in range(6):
         find_all_connections(board, row, 0, target_word, [], all_connections)
     
     payout_multiplier = calculate_total_payout_multiplier(all_connections)
     
     # Check for bonus conditions
-    bonus1_triggered = wilds_3x >= 3 #testing purposes 
-    bonus2_triggered = (wilds_1x + wilds_3x >= 9) and not bonus1_triggered
+    bonus1_triggered = wilds_1x + wilds_3x >= 10 and not (wilds_3x >= 4)
+    bonus2_triggered = (wilds_3x >= 4)
     bonus_payout = 0  # Initialize bonus payout
     
     # Trigger Bonus 1 if conditions are met
     if bonus1_triggered:
-        bonus_payout, isMaxWin = bonus_round_1(target_word, wilds_3x)
+        bonus_payout, isMaxWin = bonus_round_1(target_word, wilds_1x, wilds_3x)
     
     # Trigger Bonus 2 if conditions are met
     elif bonus2_triggered:
-        bonus_payout, isMaxWin = bonus_round_2(target_word, wilds_1x, wilds_3x)
+        bonus_payout, isMaxWin = bonus_round_2(target_word, wilds_3x)
     
     total_payout = payout_multiplier + bonus_payout
     
@@ -328,7 +334,7 @@ def simulate_game():
         "isMaxWin": isMaxWin
     }
 
-total_spins = 100000000
+total_spins = 10000000
 total_payout = 0
 total_bonus1 = 0
 total_bonus2 = 0

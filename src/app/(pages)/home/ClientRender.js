@@ -13,7 +13,6 @@ const ClientComponent = ({ children }) => {
     const ROW_SIZE = 6;
     const LETTER_SIZE = 5;
 
-
     /**
     * @var {boolean} loading
     * @brief this will enable or disable the loading animation when needed
@@ -21,97 +20,181 @@ const ClientComponent = ({ children }) => {
     */
     const [loading, setLoading] = useState(true);
 
+
     /**
     * @var {string} error
     * @brief self explanatory. used to store and print errors.
     */
-    const [error, setError] = useState(['']);
+    const [error, setError] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpError = localStorage.getItem("error");
+            if (tmpError == null) {
+                return '';
+            }
+            return JSON.parse(tmpError);
+        }
+        return '';
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("error", JSON.stringify(error));
+        }
+    }, [error]);
+
 
     /**
      * @var {feedback} feedback
      * @brief sets box colors based on wordle rules
      */
-    const [feedback, setFeedback] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
+    const [feedback, setFeedback] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpFeedback = localStorage.getItem("feedback");
+            if (tmpFeedback == null) {
+                return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
+            }
+            return JSON.parse(tmpFeedback);
+        }
+        return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('feedback', JSON.stringify(feedback));
+        }
+    }, [feedback]);
+
 
     /**
-  * @var {char} letter
-  * @brief this is the letter that is held in each letterbox
-  *        A 2D array is created to initialize the entire board
-  */
-    const [letter, setLetter] = useState(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
+     * @var {char} letter
+     * @brief this is the letter that is held in each letterbox
+     *        A 2D array is created to initialize the entire board
+     */
+    const  [letter, setLetter] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpLetter = localStorage.getItem("letter");
+            if (tmpLetter == null) {
+                return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
+            }
+            return JSON.parse(tmpLetter);
+        }
+        return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('letter', JSON.stringify(letter));
+        }
+    }, [letter]);
+
 
     /**
     * @var {refRow}
     * @brief refRow function
     */
-    const refRow = useRef(letter.map(row => row.map(() => React.createRef())));
+    const refRow = useRef([]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const rows = Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill().map(() => React.createRef()));
+            refRow.current = rows;
+        }
+    }, []);
+
 
     /**
      * @var {int} row
      * @brief stores the the currently focused row. this just means whatever
      *        row the user is currently making a guess on
      */
-    const [row, setRow] = useState(0);
-    const [isTargetWord, setIsTargetWord] = useState(null);
+    const [row, setRow] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpRow = localStorage.getItem("row");
+            if (tmpRow == null) {
+                return 0;
+            }
+            return JSON.parse(tmpRow);
+        }
+        return 0;
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("row", JSON.stringify(row));
+        }
+    }, [row]);
+
 
     /**
-  * @var {isGameOver} isGameOver
-  * @brief determines if a win or lose condition is met. when the game is ended, the game over component is 
-  *        presented.
-  */
-    const [isGameOver, setIsGameOver] = useState(false);
+     * @var todo
+     */
+    const [isTargetWord, setIsTargetWord] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpTargetWord = localStorage.getItem("isTargetWord");
+            if (tmpTargetWord == null) {
+                return null;
+            }
+            return JSON.parse(tmpTargetWord);
+        }
+        return null;
+    });
 
-    const [gameOverMessage, setGameOverMessage] = useState('');
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("isTargetWord", JSON.stringify(isTargetWord));
+        }
+    }, [isTargetWord]);
 
+
+    /**
+    * @var {isGameOver} isGameOver
+    * @brief determines if a win or lose condition is met. when the game is ended, the game over component is 
+    *        presented.
+    */
+    const [isGameOver, setIsGameOver] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpIsGameOver = localStorage.getItem("isGameOver");
+            if (tmpIsGameOver == null) {
+                return false;
+            }
+            return JSON.parse(tmpIsGameOver);
+        }
+        return false;
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("isGameOver", JSON.stringify(isGameOver));
+        }
+    }, [isGameOver]);
+
+
+    /**
+     * @var todo
+     */
+    const [gameOverMessage, setGameOverMessage] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpGameOverMessage = localStorage.getItem("gameOverMessage");
+            if (tmpGameOverMessage == null) {
+                return '';
+            }
+            return JSON.parse(tmpGameOverMessage);
+        }
+        return '';
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("gameOverMessage", JSON.stringify(gameOverMessage));
+        }
+    }, [gameOverMessage]);
+
+    
+    /**
+     * @var todo
+     */
     const [isActualWord, setIsActualWord] = useState(null);
 
-    useEffect(() => {
-        // load the game state locally 
-        const loadGameState = () => {
-            const savedLetter = JSON.parse(localStorage.getItem('letter'));
-            const savedRow = JSON.parse(localStorage.getItem('row'));
-            const savedFeedback = JSON.parse(localStorage.getItem('feedback'));
-            const savedIsTargetWord = JSON.parse(localStorage.getItem('isTargetWord'));
-            const savedIsGameOver = JSON.parse(localStorage.getItem('isGameOver'));
-            const savedGameOverMessage = JSON.parse(localStorage.getItem('gameOverMessage'));
-            const savedError = JSON.parse(localStorage.getItem('error'));
-
-            if (savedLetter !== null) setLetter(savedLetter);
-            if (savedRow !== null) setRow(savedRow);
-            if (savedFeedback !== null) setFeedback(savedFeedback);
-            if (savedIsTargetWord !== null) setIsTargetWord(savedIsTargetWord);
-            if (savedIsGameOver !== null) setIsGameOver(savedIsGameOver);
-            if (savedGameOverMessage !== null) setGameOverMessage(savedGameOverMessage);
-            if (savedError !== null) setError(savedError);
-        };
-
-        loadGameState();
-    }, []);
-
-    useEffect(() => {
-        // save the game on reload or window close
-        const saveGameState = () => {
-            
-            if (localStorage.getItem('publicKey') !== null) {
-                localStorage.setItem('letter', JSON.stringify(letter));
-                localStorage.setItem('row', JSON.stringify(row));
-                localStorage.setItem('feedback', JSON.stringify(feedback));
-                localStorage.setItem('isTargetWord', JSON.stringify(isTargetWord));
-                localStorage.setItem('isGameOver', JSON.stringify(isGameOver));
-                localStorage.setItem('gameOverMessage', JSON.stringify(gameOverMessage));
-                localStorage.setItem('error', JSON.stringify(error));
-            }
-        };
-
-        window.addEventListener('beforeunload', saveGameState);
-        window.addEventListener('routeChangeStart', saveGameState);
-
-        return () => {
-            window.removeEventListener('beforeunload', saveGameState);
-            window.removeEventListener('routeChangeStart', saveGameState);
-            
-        };
-    }, [letter, row, feedback, isTargetWord, isGameOver, gameOverMessage, error]);
 
 
     const resetGame = () => {
@@ -147,7 +230,7 @@ const ClientComponent = ({ children }) => {
 
                     //sets the keystroke to the next letterbox.
                     const nextFocusIndex = (nextIndex + 1 < LETTER_SIZE) ? nextIndex + 1 : nextIndex;
-                    refRow.current[row][nextFocusIndex].current.focus();
+                    refRow.current?.[row][nextFocusIndex].current?.focus();
                 }
             }
             //if backspace is pressed and the row isn't empty, then remove the letter int he currently focused letterbox
@@ -158,7 +241,7 @@ const ClientComponent = ({ children }) => {
                     const newLetter = [...letter];
                     newLetter[row][prevIndex] = '';
                     setLetter(newLetter);
-                    refRow.current[row][prevIndex].current.focus();
+                    refRow.current?.[row][prevIndex].current?.focus();
                 }
             }
             //if enter is pressed, and the game isn't over. proceed with processing the word typed in the current row
@@ -251,7 +334,7 @@ const ClientComponent = ({ children }) => {
                             <LetterBox
                                 // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
                                 key={letterIndex}
-                                ref={refRow.current[rowIndex][letterIndex]}
+                                ref={refRow.current?.[rowIndex]?.[letterIndex]}
                                 letter={letter}
                                 error={error}
                                 index={letterIndex}

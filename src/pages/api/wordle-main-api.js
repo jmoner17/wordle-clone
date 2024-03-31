@@ -55,8 +55,6 @@ async function getNewTarget() {
     }
 }
 
-//! in supabase the rule literally allows anyone to insert and read the db. very bad methinks ;)
-//todo: setup a service role for this specific function
 async function insertSession(word, publicKeyPem) {
     const { error } = await supabase_service
         .from('sessions')
@@ -92,8 +90,6 @@ async function isActualWord(guess) {
     }
 }
 
-//! I have it set in supabase that all users can read the db. bad maybe :(
-//todo: setup ROW LEVEL SECURITY PROPERLY
 async function getTarget(publicKey) {
 
     try {

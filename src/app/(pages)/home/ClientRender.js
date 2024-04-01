@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce';
 import { addEventListener, removeEventListener } from 'next/app';
 
 const ClientComponent = ({ children }) => {
-
+   
 
     const ROW_SIZE = 6;
     const LETTER_SIZE = 5;

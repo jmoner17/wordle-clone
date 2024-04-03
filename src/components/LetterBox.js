@@ -22,15 +22,15 @@ const LetterBox = React.forwardRef(({ letter, error, feedback, timeToFlip}, ref)
   let border = "border-2";
   let shadow = "shadow-none";
 
-  if(feedback === 'correct') {
+  if(feedback === 'green') {
     color = "bg-green-500";
     border = "border-0"
     shadow = "shadow-green-500/50";
-  } else if(feedback === 'present'){
+  } else if(feedback === 'yellow'){
     color = "bg-yellow-500";
     border = "border-0"
     shadow = "shadow-yellow-500/50"
-  } else if(feedback === 'none') {
+  } else if(feedback === 'black') {
     border = "border-0"
     shadow = "shadow-lg"
   }

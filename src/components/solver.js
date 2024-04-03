@@ -4,20 +4,20 @@ const matchesFilters = (wordList, filters) => {
   return wordList.filter((word) => {
     let match = true;
     for (let i = 0; i < filters.length; i += 1) {
-      const { colour, position, letter } = filters[i];
-      if (colour === "black") {
+      const { color, position, letter } = filters[i];
+      if (color === "black") {
         if (word.includes(letter)) {
           match = false;
           break;
         }
       }
-      if (colour === "green") {
+      if (color === "green") {
         if (word[position] !== letter) {
           match = false;
           break;
         }
       }
-      if (colour === "yellow") {
+      if (color === "yellow") {
         if (!word.includes(letter) || word[position] === letter) {
           match = false;
           break;
@@ -28,11 +28,11 @@ const matchesFilters = (wordList, filters) => {
   });
 };
 
-const colours = ["green", "yellow", "black"];
+const colors = ["green", "yellow", "black"];
 
-const calculateLetterColor = (wordList, letter, position, colour) => {
+const calculateLetterColor = (wordList, letter, position, color) => {
   const matchingWords = matchesFilters(wordList, [
-    { colour, position, letter },
+    { color, position, letter },
   ]);
   return {
     p: (matchingWords.length * 1.0) / wordList.length,
@@ -45,23 +45,23 @@ const createObject = (word, obj, depth) => {
   if (depth > 4) {
     return obj;
   }
-    // For each colour, add probabilities and new lists
+    // For each color, add probabilities and new lists
     // biome-ignore lint/complexity/noForEach: <explanation>
-        colours.forEach((colour) => {
-      if (!obj[colour] && obj.list.length > 0) {
-        obj[colour] = calculateLetterColor(
+        colors.forEach((color) => {
+      if (!obj[color] && obj.list.length > 0) {
+        obj[color] = calculateLetterColor(
           obj.list,
           word[depth],
           depth,
-          colour
+          color
         );
       }
     });
     const newDepth = depth + 1;
     // biome-ignore lint/complexity/noForEach: <explanation>
-    colours.forEach((colour) => {
+    colors.forEach((color) => {
       if (obj.list.length > 0) {
-        createObject(word, obj[colour], newDepth);
+        createObject(word, obj[color], newDepth);
       }
     });
 };
@@ -75,13 +75,13 @@ const fillInObject = (word, originalList) => {
 
 const calculateP = (arr, obj, p, depth) => {
   // biome-ignore lint/complexity/noForEach: <explanation>
-  colours.forEach((colour) => {
-    if (obj[colour] && obj[colour].list.length > 0) {
+  colors.forEach((color) => {
+    if (obj[color] && obj[color].list.length > 0) {
       // console.log({ p: obj.p * p, depth });
       if (depth === 4) {
-        arr.push(obj[colour].p * p);
+        arr.push(obj[color].p * p);
       } else {
-        calculateP(arr, obj[colour], obj[colour].p * p, depth + 1);
+        calculateP(arr, obj[color], obj[color].p * p, depth + 1);
       }
     }
   });
@@ -101,10 +101,10 @@ const calculateWordScore = (obj, word) => {
 
 const fullList = list;
 
-const calculate = (filters, mode) => {
+const calculate = (filters) => {
   const filteredList = matchesFilters(fullList, [...filters]);
 
-  let usedList = mode === "hard" ? filteredList : fullList;
+  let usedList = fullList;
 
   let minScore = 1;
   let minWord = usedList[0];

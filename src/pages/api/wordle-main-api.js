@@ -25,17 +25,16 @@ const supabase_anon = createClient(supabaseUrl, supabaseAnonKey);
 
 //Generates the pub private keypair
 //todo: rather than generating a massive key we will generate a singular less computationally intense hash
-function generateKeyPair() {
-    const keypair = pki.rsa.generateKeyPair({ bits: 2048 });
-    return keypair;
+async function generateKeyPair() {
+    return await pki.rsa.generateKeyPair({ bits: 2048 });;
 }
 
-function generateRandomNumber() {
-    return crypto.randomInt(1, 5749);
+async function generateRandomNumber() {
+    return await crypto.randomInt(1, 5749);
 }
 
 async function getNewTarget() {
-    const randomId = generateRandomNumber();
+    const randomId = await generateRandomNumber();
 
     try {
         const { data, error } = await supabase_anon
@@ -307,8 +306,8 @@ export default async function handler(req, res) {
         }
 
         // Initialize game session if not validating a guess
-        const { publicKey, privateKey } = generateKeyPair();
-        const publicKeyPem = pki.publicKeyToPem(publicKey);
+        const { publicKey, privateKey } = await generateKeyPair();
+        const publicKeyPem = await pki.publicKeyToPem(publicKey);
         const word = await getNewTarget();
         if (!word) {
             return res.status(500).json({ error: "Failed to fetch word" });

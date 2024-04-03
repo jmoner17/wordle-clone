@@ -5,6 +5,8 @@ import { useSupabase } from "@/utils/supabase-provider";
 import { undo } from "draft-js/lib/EditorState";
 
 export default function Home() {
+  const [fallingLetters, setFallingLetters] = useState([])
+  
   const [_letters, setLetters] = useState(() => {
     if(typeof window !== 'undefined') {
       const localNum = localStorage.getItem("LETTERS");
@@ -28,7 +30,7 @@ export default function Home() {
       if(localACCount === undefined) return 0;
       return JSON.parse(localACCount);
     }
-    return 0;
+    return localACCount;
   });
 
   useEffect(() => {
@@ -38,53 +40,68 @@ export default function Home() {
   }, [autoClickers]);
 
   const [autoClickerCost, setAutoClickerCost] = useState(() => {
-    if(typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       const localACCost = localStorage.getItem("AUTO_CLICKER_COST");
-      if(localACCost === undefined) return 100;
-      return JSON.parse(localACCost);
+      if (localACCost === undefined || localACCost === null) return 100; // Ensure a default cost is set
+      return JSON.parse(localACCost) || 100; // Ensure a default cost is set if parsing fails
     }
-    return 100;
+    return 100; // Default cost
   });
 
   useEffect(() => {
-    if(typeof window !== 'undefined') {
-      localStorage.setItem("AUTO_CLICKER_COST", JSON.stringify(autoClickerCost));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("AUTO_CLICKER_COST", JSON.stringify(autoClickerCost || 100)); // Ensure a default cost is saved if autoClickerCost becomes null or undefined
     }
   }, [autoClickerCost]);
 
-  const [fallingLetters, setFallingLetters] = useState([])
+  
 
-  const prevLettersRef = useRef([]);
+
 
   const handleClick = (e) => {
     e.preventDefault(); // Prevent the default behavior of the button click
     setLetters(_letters + 1);
-
+  
     // Generate a random letter (a-z)
     const randomLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
-
+  
     // Add the random letter to the fallingLetters array
-    setFallingLetters((prev) => [...prev, { letter: randomLetter, falling: true }]);
-
-    // Update the previous _letters ref
-    prevLettersRef.current = [...prevLettersRef.current, randomLetter];
+    setFallingLetters(prev => [...prev, { letter: randomLetter, top: -250, left: Math.random() * window.innerWidth }]);
   };
 
   useEffect(() => {
-    // Clear the falling _letters after a delay
-    const clearFallingLetters = setTimeout(() => {
-      setFallingLetters([]);
-    }, 1050); // Adjust the delay as needed
-
-    // Clear the falling _letters when the component unmounts or when a new letter is spawned
-    return () => clearTimeout(clearFallingLetters);
+    const clearFallingLetters = () => {
+      setFallingLetters(prev => {
+        // Filter out the falling letters that have moved beyond the bottom yet
+        return prev.filter(fallingLetter => fallingLetter.top + 50 < window.innerHeight);
+      });
+    };
+  
+    const fallingLettersInterval = setInterval(clearFallingLetters, 100); // Adjust the interval as needed
+  
+    return () => clearInterval(fallingLettersInterval);
+  }, []);
+  
+  useEffect(() => {
+    const animateFallingLetters = () => {
+      setFallingLetters(prev => {
+        return prev.map(fallingLetter => ({
+          ...fallingLetter,
+          top: fallingLetter.top + 1 // Adjust the speed of falling by changing the value
+        }));
+      });
+    };
+  
+    const fallingLettersAnimationInterval = setInterval(animateFallingLetters, 2); // Adjust the interval as needed
+  
+    return () => clearInterval(fallingLettersAnimationInterval);
   }, []);
 
   const handlePurchaseAutoClicker = () => {
-    if (_letters >= autoClickerCost) {
-      setAutoClickers((prev) => prev + 1);
-      setLetters((prev) => prev - autoClickerCost);
-      setAutoClickerCost((prev) => Math.ceil(prev * 1.05)); // Increase cost for the next auto clicker
+    if (_letters >= autoClickerCost && autoClickerCost > 0) { // Ensure the cost is greater than 0 before purchase
+      setAutoClickers(prev => prev + 1);
+      setLetters(prev => prev - autoClickerCost);
+      setAutoClickerCost(prev => Math.ceil(prev * 1.05)); // Increase cost for the next auto clicker
     }
   };
 
@@ -108,7 +125,7 @@ elementsToChangeFont.forEach(element => {
 
   return (
     
-    <div>
+    <div style={{ height: '100vh', overflow: 'hidden' }}>
       
       <div style={{ textAlign: 'center', paddingTop: '20px' }}>
         <h1 className="change-font-to-consolas" style={{ fontSize: '36px' }}>Wordle Clicker</h1>
@@ -118,8 +135,8 @@ elementsToChangeFont.forEach(element => {
         Letters spawned: 
       </div>
 
-      <div style={{ position: 'absolute', textAlign: 'center', left: '47%', marginTop: '20px', fontSize: '20px' }}>
-        {_letters}
+      <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '20px', fontFamily: "consolas", }}>
+        {_letters.toFixed(2)}
       </div>
 
       <div className="clickers-box">
@@ -127,22 +144,21 @@ elementsToChangeFont.forEach(element => {
       </div>
 
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-        {fallingLetters.map((fallingLetter, index) => (
-        fallingLetter.falling && ( // Render only falling _letters
-          <div
-            key={index}
-            style={{
-              position: 'absolute',
-              top: `${Math.random() * -200}px`,
-              left: `${Math.random() * 100}vw`,
-              transform: 'translateX(-50%)',
-              animation: 'fallingAnimation 1s ease-out',
-              fontSize: '24px',
-            }}
-          >
-            {fallingLetter.letter}
-          </div>
-        )
+      {fallingLetters.map((fallingLetter, index) => (
+        <div
+          key={index}
+          style={{
+            position: 'absolute',
+            top: `${fallingLetter.top}px`,
+            left: `${fallingLetter.left}px`,
+            fontSize: '24px',
+            animation: 'fallingAnimation 3s ease-out', // You can adjust animation properties as needed
+          }}
+        >
+          {fallingLetter.letter}
+        </div>
+
+        
       ))}
 
           

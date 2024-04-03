@@ -4,13 +4,15 @@ import { useRouter } from 'next/navigation';
 import { useSupabase } from "@/utils/supabase-provider";
 import { undo } from "draft-js/lib/EditorState";
 
+
 export default function Home() {
-  const [fallingLetters, setFallingLetters] = useState([])
-  
+  import("@/utils/supabase-provider").then();
+  const [fallingLetters, setFallingLetters] = useState([]);
+
   const [_letters, setLetters] = useState(() => {
     if(typeof window !== 'undefined') {
       const localNum = localStorage.getItem("LETTERS");
-      if(localNum == null) return 0;
+      if(localNum === null) return 0;
       return JSON.parse(localNum);
     }
     return 0;
@@ -24,14 +26,18 @@ export default function Home() {
 
  
 
-  const [autoClickers, setAutoClickers] = useState(() => {
-    if(typeof window !== 'undefined') {
-      const localACCount = localStorage.getItem("AUTO_CLICKERS");
-      if(localACCount === undefined) return 0;
-      return JSON.parse(localACCount);
+  const [autoClickers, setAutoClickers] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      import("@/utils/supabase-provider").then(module => {
+        const localACCount = localStorage.getItem("AUTO_CLICKERS");
+        if (localACCount !== null) {
+          setAutoClickers(JSON.parse(localACCount));
+        }
+      });
     }
-    return localACCount;
-  });
+  }, []);
 
   useEffect(() => {
     if(typeof window !== 'undefined') {

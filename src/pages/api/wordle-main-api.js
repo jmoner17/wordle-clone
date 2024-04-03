@@ -35,7 +35,7 @@ function generateRandomNumber() {
 }
 
 async function getNewTarget() {
-    const randomId = generateRandomNumber();
+    const randomId = await generateRandomNumber();
 
     try {
         const { data, error } = await supabase_anon

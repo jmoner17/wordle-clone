@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce';
 
 const SessionComponent = () => {
 
-    const [sessionData, setSessionData] = useState({ publicKey: ''});
+    const [sessionData, setSessionData] = useState({ publicKey: null});
 
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

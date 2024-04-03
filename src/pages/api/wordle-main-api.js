@@ -25,12 +25,12 @@ const supabase_anon = createClient(supabaseUrl, supabaseAnonKey);
 
 //Generates the pub private keypair
 //todo: rather than generating a massive key we will generate a singular less computationally intense hash
-function generateKeyPair() {
-    return pki.rsa.generateKeyPair({ bits: 2048 });;
+async function generateKeyPair() {
+    return await pki.rsa.generateKeyPair({ bits: 2048 });;
 }
 
-function generateRandomNumber() {
-    return crypto.randomInt(1, 5749);
+async function generateRandomNumber() {
+    return await crypto.randomInt(1, 5749);
 }
 
 async function getNewTarget() {

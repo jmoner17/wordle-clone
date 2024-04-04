@@ -185,53 +185,25 @@ async function resetTarget(publicKey) {
  * for solver.js
  */
 function getFeedback(guess, targetWord) {
-    const feedback = [];
-    const unmatchedIndices = new Set();
-    const unmatchedLetters = new Map();
+    const mutedTarget = targetWord.split('');
 
-    // Initialize unmatchedIndices and unmatchedLetters
-    targetWord.split('').forEach((letter, index) => {
-        unmatchedIndices.add(index);
-        if (!unmatchedLetters.has(letter.toUpperCase())) {
-            unmatchedLetters.set(letter.toUpperCase(), []);
+    const feedback = guess.split('').map((letter, index) => {
+        if (letter.toUpperCase() === targetWord[index].toUpperCase()) {
+            mutedTarget[index] = '0'; 
+            return 'correct';
         }
-        unmatchedLetters.get(letter.toUpperCase()).push(index);
+        return null; 
     });
 
-    // Find greens
     guess.split('').forEach((letter, index) => {
-        const upperCaseLetter = letter.toUpperCase();
-        if (upperCaseLetter === targetWord[index].toUpperCase()) {
-            feedback[index] = 'green';
-            unmatchedIndices.delete(index);
-            const targetIndices = unmatchedLetters.get(upperCaseLetter);
-            const targetIndex = targetIndices.indexOf(index);
-            if (targetIndex !== -1) {
-                targetIndices.splice(targetIndex, 1);
-            }
-        } else {
-            feedback[index] = null;
-        }
-    });
-
-    // Find yellows and blacks
-    guess.split('').forEach((letter, index) => {
-        if (feedback[index] === null) {
-            const upperCaseLetter = letter.toUpperCase();
-            const targetIndices = unmatchedLetters.get(upperCaseLetter);
-            if (targetIndices && targetIndices.length > 0) {
-                const targetIndex = targetIndices.shift();
-                feedback[index] = 'yellow';
-                unmatchedIndices.delete(targetIndex);
+        if (feedback[index] === null) { 
+            if (mutedTarget.map(l => l.toUpperCase()).includes(letter.toUpperCase())) {
+                feedback[index] = 'present';
+                mutedTarget[index] = '0'; 
             } else {
-                feedback[index] = 'black';
+                feedback[index] = 'none';
             }
         }
-    });
-
-    // Convert remaining unmatched indices to blacks
-    unmatchedIndices.forEach(index => {
-        feedback[index] = 'black';
     });
 
     return feedback;

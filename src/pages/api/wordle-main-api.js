@@ -184,29 +184,43 @@ async function resetTarget(publicKey) {
  * changed the logic so yellows are correct, also changed present, correct, & wrong to be yellow, green, & black
  * for solver.js
  */
-function getFeedback(guess, targetWord) {
-    const mutedTarget = targetWord.split('');
+function getFeedback(targetWord, userGuess) {
+    targetWord = targetWord.toUpperCase(); // Convert targetWord to uppercase
+    userGuess = userGuess.toUpperCase(); // Convert userGuess to uppercase
 
-    const feedback = guess.split('').map((letter, index) => {
-        if (letter.toUpperCase() === targetWord[index].toUpperCase()) {
-            mutedTarget[index] = '0'; 
-            return 'green';
+    let feedback = [];
+    let modTarget = targetWord.split(''); // Split targetWord into an array of characters
+    
+    // Check for green letters (correct letters in correct positions)
+    modTarget.forEach((char, i) => {
+        if (userGuess[i] === char) {
+            feedback[i] = 'green'; // Store 'green' at index i
+            modTarget[i] = '*'; // Mark the letter as taken to prevent duplicates
         }
-        return null; 
     });
-
-    guess.split('').forEach((letter, index) => {
-        if (feedback[index] === null) { 
-            if (mutedTarget.map(l => l.toUpperCase()).includes(letter.toUpperCase())) {
-                feedback[index] = 'yellow';
-            } else {
-                feedback[index] = 'black';
+    
+    // Check for yellow letters (correct letters in incorrect positions)
+    userGuess.split('').forEach((char, i) => {
+        if (feedback[i] !== 'green') { // Ensure the character is not already marked as green
+            const index = modTarget.indexOf(char);
+            if (index !== -1 && index !== i) { // Check if the character is in the target word but not in the same position in the guess
+                feedback[index] = 'yellow'; // Store 'yellow' at index index
+                modTarget[index] = '*'; // Mark the letter as taken to prevent duplicates
             }
         }
     });
-
+    
+    // Fill the remaining spaces with black (incorrect letters)
+    for (let i = 0; i < 5; i++) {
+        if (feedback[i] === undefined) { // Check if color at index i is undefined
+            feedback[i] = 'black'; // Store 'black' at index i
+        }
+    }
+    
     return feedback;
 }
+
+
 
 
 // API route for initializing a game

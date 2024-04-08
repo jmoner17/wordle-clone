@@ -295,7 +295,7 @@ const ClientComponent = ({ children }) => {
                             const newFeedback = [...feedback];
                             setIsActualWord(true);
                             setRow(row + 1);
-                            const nextRoboGuess = nextGuess(row + 1, newFeedback, guess);
+                            const nextRoboGuess = nextGuess(row + 1, data.feedback, guess);
                             setRoboGuess(nextRoboGuess);
                             if (row < ROW_SIZE - 1) {
                                 refRow.current[row + 1][0].current.focus();

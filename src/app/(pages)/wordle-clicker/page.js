@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from 'next/navigation';
 import { useSupabase } from "@/utils/supabase-provider";
 import { undo } from "draft-js/lib/EditorState";
 
@@ -26,7 +25,14 @@ export default function Home() {
 
  
 
-  const [autoClickers, setAutoClickers] = useState(0);
+  const [autoClickers, setAutoClickers] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const localACs = localStorage.getItem("AUTO_CLICKERS");
+      if (localACs === undefined || localACs === null) return 0; // Ensure a default cost is set
+      return JSON.parse(localACs) || 0; // Ensure a default cost is set if parsing fails
+    }
+    return 0; // Default cost
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

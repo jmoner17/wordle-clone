@@ -185,40 +185,22 @@ async function resetTarget(publicKey) {
  * for solver.js
  */
 function getFeedback(guess, targetWord) {
-    const feedback = [];
-    const matchIndices = []; // Array to store indices of matching letters
-    const matchedLetters = new Set(); // Set to keep track of matched letters in targetWord
+    const mutedTarget = targetWord.split('');
 
-    // Greens
-    targetWord.split('').forEach((letter, index) => {
-        letter = letter.toUpperCase();
-        guess[index] = guess[index].toUpperCase();
-        if(guess[index] === letter){
-            feedback[index] = 'green';
-            letters[index] = '*';
-            matchIndices.push(index); // Store the index of matching letter
-            matchedLetters.add(letter); // Add matched letter to the set
+    const feedback = guess.split('').map((letter, index) => {
+        if (letter.toUpperCase() === targetWord[index].toUpperCase()) {
+            mutedTarget[index] = '0'; 
+            return 'green';
         }
+        return null; 
     });
 
-    // black
     guess.split('').forEach((letter, index) => {
-        letter = letter.toUpperCase();
-        guess[index] = guess[index].toUpperCase();
-        if (!targetWord.includes(guess[index])) { //if the target word does not include the letter, set it to black
-            feedback[index] = 'black';
-            letters[index] = '0';
-        }
-    });
-
-    // yellows
-    guess.split('').forEach((letter, index) => {
-        letter = letter.toUpperCase();
-        guess[index] = guess[index].toUpperCase();
-        if(targetWord.includes(guess[index]) && !matchIndices.includes(index)){
-            if (!matchedLetters.has(guess[index])) { // Check if the letter hasn't been matched before
-                feedback[index] = 'yellow'; // Letter is in targetWord but not at the same position as guess
-                matchedLetters.add(guess[index]); // Add matched letter to the set
+        if (feedback[index] === null) { 
+            if (mutedTarget.map(l => l.toUpperCase()).includes(letter.toUpperCase())) {
+                feedback[index] = 'yellow';
+            } else {
+                feedback[index] = 'black';
             }
         }
     });

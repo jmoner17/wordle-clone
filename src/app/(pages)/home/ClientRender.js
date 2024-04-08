@@ -1,4 +1,7 @@
 'use client'
+const { list } = require("./wordlist.json");
+const nextGuess = require("./solver");
+
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useUser } from "@/utils/useClient";
@@ -146,6 +149,23 @@ const ClientComponent = ({ children }) => {
     }, [isTargetWord]);
 
 
+    const [roboGuess, setRoboGuess] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpRoboGuess = localStorage.getItem("roboGuess");
+            if (tmpRoboGuess === null) {
+                return 'TRACE';
+            }
+            return JSON.parse(tmpRoboGuess);
+        }
+        return 'TRACE';
+    });
+    
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("roboGuess", JSON.stringify(roboGuess));
+        }
+    }, [roboGuess]);
+
     /**
     * @var {isGameOver} isGameOver
     * @brief determines if a win or lose condition is met. when the game is ended, the game over component is 
@@ -209,8 +229,7 @@ const ClientComponent = ({ children }) => {
         setError('');
     };
 
-
-
+    
     //handles all keypress events
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
@@ -276,6 +295,8 @@ const ClientComponent = ({ children }) => {
                             const newFeedback = [...feedback];
                             setIsActualWord(true);
                             setRow(row + 1);
+                            const nextRoboGuess = nextGuess(row + 1, newFeedback, guess);
+                            setRoboGuess(nextRoboGuess);
                             if (row < ROW_SIZE - 1) {
                                 refRow.current[row + 1][0].current.focus();
                             }
@@ -285,11 +306,13 @@ const ClientComponent = ({ children }) => {
                                 setIsGameOver(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
+                                setRoboGuess(nextGuess());
                             } else if (data.forceGameOver) {
                                 setGameOverMessage(`You're BAD! Word Was: ${data.targetWord}`);
                                 setIsGameOver(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
+                                setRoboGuess(nextGuess());
                             }
                             else {
                                 newFeedback[row] = data.feedback;
@@ -311,7 +334,7 @@ const ClientComponent = ({ children }) => {
         return () => {
             document.removeEventListener('keydown', keyPressHandler);
         };
-    }, [letter, row, feedback, isGameOver, isActualWord, isTargetWord]);
+    }, [letter, row, feedback, isGameOver, isActualWord, isTargetWord, roboGuess]);
 
 
 
@@ -343,6 +366,12 @@ const ClientComponent = ({ children }) => {
                         ))}
                     </div>
                 ))}
+            </div>
+            <div className="wordle-bot-text">
+                WordleBot Says: 
+                    <div className = "wordle-bot-text-word">
+                        <br/>{roboGuess}
+                    </div>
             </div>
         </main>
     );

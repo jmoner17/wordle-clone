@@ -1,5 +1,4 @@
 'use client'
-const { list } = require("./wordlist.json");
 const nextGuess = require("./solver");
 
 

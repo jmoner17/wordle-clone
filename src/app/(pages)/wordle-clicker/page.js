@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from 'next/navigation';
 import { useSupabase } from "@/utils/supabase-provider";
 import { undo } from "draft-js/lib/EditorState";
 
@@ -34,6 +33,7 @@ export default function Home() {
     }
     return 0; // Default cost
   });
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       import("@/utils/supabase-provider").then(module => {

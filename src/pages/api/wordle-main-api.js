@@ -186,52 +186,41 @@ async function resetTarget(publicKey) {
  */
 function getFeedback(guess, targetWord) {
     const feedback = [];
-    const unmatchedIndices = new Set();
-    const unmatchedLetters = new Map();
+    const matchIndices = []; // Array to store indices of matching letters
+    const matchedLetters = new Set(); // Set to keep track of matched letters in targetWord
 
-    // Initialize unmatchedIndices and unmatchedLetters
+    // Greens
     targetWord.split('').forEach((letter, index) => {
-        unmatchedIndices.add(index);
-        if (!unmatchedLetters.has(letter.toUpperCase())) {
-            unmatchedLetters.set(letter.toUpperCase(), []);
-        }
-        unmatchedLetters.get(letter.toUpperCase()).push(index);
-    });
-
-    // Find greens
-    guess.split('').forEach((letter, index) => {
-        const upperCaseLetter = letter.toUpperCase();
-        if (upperCaseLetter === targetWord[index].toUpperCase()) {
+        letter = letter.toUpperCase();
+        guess[index] = guess[index].toUpperCase();
+        if(guess[index] === letter){
             feedback[index] = 'green';
-            unmatchedIndices.delete(index);
-            const targetIndices = unmatchedLetters.get(upperCaseLetter);
-            const targetIndex = targetIndices.indexOf(index);
-            if (targetIndex !== -1) {
-                targetIndices.splice(targetIndex, 1);
-            }
-        } else {
-            feedback[index] = null;
+            letters[index] = '*';
+            matchIndices.push(index); // Store the index of matching letter
+            matchedLetters.add(letter); // Add matched letter to the set
         }
     });
 
-    // Find yellows and blacks
+    // black
     guess.split('').forEach((letter, index) => {
-        if (feedback[index] === null) {
-            const upperCaseLetter = letter.toUpperCase();
-            const targetIndices = unmatchedLetters.get(upperCaseLetter);
-            if (targetIndices && targetIndices.length > 0) {
-                const targetIndex = targetIndices.shift();
-                feedback[index] = 'yellow';
-                unmatchedIndices.delete(targetIndex);
-            } else {
-                feedback[index] = 'black';
-            }
+        letter = letter.toUpperCase();
+        guess[index] = guess[index].toUpperCase();
+        if (!targetWord.includes(guess[index])) { //if the target word does not include the letter, set it to black
+            feedback[index] = 'black';
+            letters[index] = '0';
         }
     });
 
-    // Convert remaining unmatched indices to blacks
-    unmatchedIndices.forEach(index => {
-        feedback[index] = 'black';
+    // yellows
+    guess.split('').forEach((letter, index) => {
+        letter = letter.toUpperCase();
+        guess[index] = guess[index].toUpperCase();
+        if(targetWord.includes(guess[index]) && !matchIndices.includes(index)){
+            if (!matchedLetters.has(guess[index])) { // Check if the letter hasn't been matched before
+                feedback[index] = 'yellow'; // Letter is in targetWord but not at the same position as guess
+                matchedLetters.add(guess[index]); // Add matched letter to the set
+            }
+        }
     });
 
     return feedback;

@@ -25,27 +25,42 @@ const nextGuess = (row = 0, feedback = [], guess = 'trace') => {
     }
     guess.toLowerCase(); // normalize input
     // Create a copy of the filteredWords list
-    let filteredWordsCopy = [...filteredWords];
-    for(let i = 0; i < 5; i++){
-        if (feedback[i] === 'green'){ //include words with green at right position
-            filteredWordsCopy=(filteredWordsCopy.filter((word) => (word[i]===guess[i])));
-        }
-        if(feedback[i] === 'black'){ //exclude words with black letter
-            filteredWordsCopy=(filteredWordsCopy.filter((word) => !(word.includes(guess[i]))));
-        }
-        if(feedback[i] === 'yellow'){ //exclude words with yellow at wrong spot
-            filteredWordsCopy=(filteredWordsCopy.filter((word) => !(word[i]===guess[i])));
-        }
-        if(feedback[i] === 'yellow'){ //include words with a yellow
-            filteredWordsCopy=(filteredWordsCopy.filter((word) => word.includes(guess[i])));
-        }
-
-    }
-    // Update the original filteredWords list
-    filteredWords = filteredWordsCopy;
     
-    if(filteredWordsCopy[0] !== 'undefined')
-        {return filteredWordsCopy[0].toUpperCase();}
+    //match feedback to guess & to word for filter
+    let greens = [];
+    let yellows = [];
+    let blacks = []
+    for(let i = 0; i < 5; i++){
+        switch(feedback[i]){
+            case 'green':
+                greens.push(i);
+                break;
+            case 'yellow':
+                yellows.push(i);
+                break;
+            case 'black':
+                blacks.push(i);
+                break;
+            }
+    }
+    // filter words if the words has the correct letter, 'and' them all into one includes statement for every green
+    // So pretty much make some kinda of temp word from all these feed back with all greens
+    // so say word is cuter and you guess buyer -> the word list will filter out all words except
+    // ones that look like this *u*er so basically includes all green index letters
+    // 
+    // then you remove all the words that contain black letters fo filter words that contain user guess[black index]
+    // 
+    // then we remove all the word that have a yellow at the spot the user guess yellow user_guess[yellow index]
+    //
+    // but we also have to include all the words that have the yellow letter !!!! this is why this is last
+    //
+    // then you can opt to do a hash function that outputs the first word of the hash table with the longest list
+        
+    
+    
+    
+    if(filteredWords[0] !== 'undefined')
+        {return filteredWords[0].toUpperCase();}
     return "OH NO";
 };
 // could call a hashing function where we hash by indices with unknown letters

@@ -1,3 +1,4 @@
+const { list } = require("./wordlist.json");
     /**
      * feedback = 'color' 'color' 'color' 'color' 'color'
      * indexes:      0       1       2       3       4
@@ -17,26 +18,19 @@
      */
 let filteredWordlist = [];
 
-const nextGuess = async (row = 0, feedback = [], guess = 'trace') => {
-        if (row === 0) {
-            try {
-                const response = await fetch('./wordlist.json');
-                const { list } = await response.json();
-                filteredWordlist = list;
-                return guess.toUpperCase();
-            } catch (error) {
-                console.error('Error fetching wordlist:', error);
-                return "OH NO";
-            }
-        }
+const nextGuess = (row = 0, feedback = [], guess = 'trace') => {
+    if (row === 0) {
+        filteredWordlist = list;
+        return guess.toUpperCase();
+    } 
  
     
     guess = guess.toLowerCase();
     
     //match feedback to guess & to word for filter
-    let greens = [];
-    let yellows = [];
-    let blacks = [];
+    const greens = [];
+    const yellows = [];
+    const blacks = [];
     for(let i = 0; i < 5; i++){
         switch(feedback[i]){
             case 'green':
@@ -50,9 +44,9 @@ const nextGuess = async (row = 0, feedback = [], guess = 'trace') => {
                 break;
             }
     }
-    const numberOfAnds_G = greens.length()-1;
-    const numberOfAnds_Y = yellows.length()-1;
-    const numberOfAnds_B = yellows.length()-1;
+    const numberOfAnds_G = greens.length-1;
+    const numberOfAnds_Y = yellows.length-1;
+    const numberOfAnds_B = yellows.length-1;
     // filter words if the words has the correct letter, 'and' them all into one includes statement for every green
     // So pretty much make some kinda of temp word from all these feed back with all greens
     // so say word is cuter and you guess buyer -> the word list will filter out all words except
@@ -66,15 +60,15 @@ const nextGuess = async (row = 0, feedback = [], guess = 'trace') => {
     // but we also have to include all the words that have the yellow letter !!!! this is why this is last
     //
     // then you can opt to do a hash function that outputs the first word of the hash table with the longest list
-    filteredWordlist = filteredWordlist.filter(word => {
-        // Implement your filtering logic based on feedback
-        // For example, check if the word satisfies the feedback conditions
-        // and return true or false accordingly
-        return true; // Placeholder condition, replace with actual filtering logic
-    });
-
+    filteredWordlist = filteredWordlist.filter(word => {word.includes('z')});
+    console.log("Hello");
+    console.log("filteredWordlist length:", filteredWordlist.length);
+    console.log((filteredWordlist[0]));
     if(filteredWordlist[0] !== 'undefined')
-        {return filteredWordlist[0].toUpperCase();}
+        {
+            console.log((filteredWordlist));
+            return filteredWordlist[0].toUpperCase();
+        }
     return "OH NO";
 };
 // could call a hashing function where we hash by indices with unknown letters

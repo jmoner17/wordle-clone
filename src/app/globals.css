@@ -390,6 +390,17 @@
   margin: 1rem; 
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+.clickers-box:nth-child(1) {
+  top: 12vh;
+}
+
+.clickers-box:nth-child(2) {
+  top: 15vh;
+}
+
+.clickers-box:nth-child(3) {
+  top: 18vh;
+}
 .wordle-bot-text {
   font-family: consolas;
   font-size: 18px;

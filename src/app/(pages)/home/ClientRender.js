@@ -294,8 +294,6 @@ const ClientComponent = ({ children }) => {
                             const newFeedback = [...feedback];
                             setIsActualWord(true);
                             setRow(row + 1);
-                            const nextRoboGuess = nextGuess(row, feedback, guess);
-                            setRoboGuess(nextRoboGuess);
                             if (row < ROW_SIZE - 1) {
                                 refRow.current[row + 1][0].current.focus();
                             }
@@ -317,7 +315,8 @@ const ClientComponent = ({ children }) => {
                                 newFeedback[row] = data.feedback;
                             }
                             setFeedback(newFeedback);
-
+                            const nextRoboGuess = nextGuess(row, feedback[row], guess);
+                            setRoboGuess(nextRoboGuess);
                         } else {
                             setIsActualWord(false);
                         }

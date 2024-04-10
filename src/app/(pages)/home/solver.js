@@ -1,6 +1,3 @@
-const { list } = require("./wordlist.json");
-
-const words = list; 
     /**
      * feedback = 'color' 'color' 'color' 'color' 'color'
      * indexes:      0       1       2       3       4
@@ -18,13 +15,23 @@ const words = list;
      * keep words that have the yellow letter in it
      * remove words that contain black letter
      */
-let filteredWords = [...words];
-const nextGuess = (row = 0, feedback = [], guess = 'trace') => {
-    if (row === 0) {
-        return guess.toUpperCase();
-    }
-    guess.toLowerCase(); // normalize input
-    // Create a copy of the filteredWords list
+let filteredWordlist = [];
+
+const nextGuess = async (row = 0, feedback = [], guess = 'trace') => {
+        if (row === 0) {
+            try {
+                const response = await fetch('./wordlist.json');
+                const { list } = await response.json();
+                filteredWordlist = list;
+                return guess.toUpperCase();
+            } catch (error) {
+                console.error('Error fetching wordlist:', error);
+                return "OH NO";
+            }
+        }
+ 
+    
+    guess = guess.toLowerCase();
     
     //match feedback to guess & to word for filter
     let greens = [];
@@ -43,11 +50,15 @@ const nextGuess = (row = 0, feedback = [], guess = 'trace') => {
                 break;
             }
     }
+    const numberOfAnds_G = greens.length()-1;
+    const numberOfAnds_Y = yellows.length()-1;
+    const numberOfAnds_B = yellows.length()-1;
     // filter words if the words has the correct letter, 'and' them all into one includes statement for every green
     // So pretty much make some kinda of temp word from all these feed back with all greens
     // so say word is cuter and you guess buyer -> the word list will filter out all words except
     // ones that look like this *u*er so basically includes all green index letters
-    // 
+    //
+     
     // then you remove all the words that contain black letters fo filter words that contain user guess[black index]
     // 
     // then we remove all the word that have a yellow at the spot the user guess yellow user_guess[yellow index]
@@ -55,12 +66,15 @@ const nextGuess = (row = 0, feedback = [], guess = 'trace') => {
     // but we also have to include all the words that have the yellow letter !!!! this is why this is last
     //
     // then you can opt to do a hash function that outputs the first word of the hash table with the longest list
-        
-    
-    
-    
-    if(filteredWords[0] !== 'undefined')
-        {return filteredWords[0].toUpperCase();}
+    filteredWordlist = filteredWordlist.filter(word => {
+        // Implement your filtering logic based on feedback
+        // For example, check if the word satisfies the feedback conditions
+        // and return true or false accordingly
+        return true; // Placeholder condition, replace with actual filtering logic
+    });
+
+    if(filteredWordlist[0] !== 'undefined')
+        {return filteredWordlist[0].toUpperCase();}
     return "OH NO";
 };
 // could call a hashing function where we hash by indices with unknown letters

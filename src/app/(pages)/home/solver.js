@@ -29,7 +29,7 @@ const nextGuess = (row = 0, feedback = [], guess = 'trace') => {
     //match feedback to guess & to word for filter
     let greens = [];
     let yellows = [];
-    let blacks = []
+    let blacks = [];
     for(let i = 0; i < 5; i++){
         switch(feedback[i]){
             case 'green':

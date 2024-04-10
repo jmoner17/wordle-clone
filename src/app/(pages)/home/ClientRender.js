@@ -152,11 +152,11 @@ const ClientComponent = ({ children }) => {
         if (typeof window !== 'undefined') {
             const tmpRoboGuess = localStorage.getItem("roboGuess");
             if (tmpRoboGuess === null) {
-                return 'TRACE';
+                return nextGuess();
             }
             return JSON.parse(tmpRoboGuess);
         }
-        return 'TRACE';
+        return nextGuess();
     });
     
     useEffect(() => {

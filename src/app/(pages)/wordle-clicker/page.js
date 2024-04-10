@@ -161,7 +161,7 @@ export default function Home() {
           Factories Polluting: {wordFactoryCount}
         </div>
         <div class="clickers-box">
-          Tracy Bennet's Writing: {nytCount}
+        Tracy Bennet&apos;s Writing: {nytCount}
         </div>
       </div>
 

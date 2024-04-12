@@ -1,13 +1,30 @@
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
+#include "wordle.h"
+#include <cctype> 
+using namespace std; 
+Wordle::Wordle(string todaysWord){
+    numberOfGuessesAllowed = 6;
+    guessCount = 0;
+    targetWord = todaysWord;
+    userGuess = "";
+    load_wordlist("wordlist.txt");
 
-using namespace std;
+}
+string Wordle::displayGuess(){
+    string tmp = userGuess;
+    for(const string &color : feedback){
+        int i = 0;
+        if(color[0] == 'g'){
+            tmp[i] = '*';
+        }
+        else if(color[0] == 'y'){
+            tmp[i] = '#';
+        }
+        i++;
+    }
+    return tmp;
+}
 
-
-vector<string> getFeedback(string targetWord, string userGuess) {
+vector<string> Wordle::getFeedback() {
     transform(targetWord.begin(), targetWord.end(), targetWord.begin(), ::toupper);
     transform(userGuess.begin(), userGuess.end(), userGuess.begin(), ::toupper);
 
@@ -45,8 +62,10 @@ vector<string> getFeedback(string targetWord, string userGuess) {
     return feedback;
 }
 
-//method load a wordlist from file into a vector
-void load_wordlist(vector<string> &wordlist, string filename){
+void Wordle::updateUserGuess(std::string newGuess){
+        userGuess=newGuess;
+}
+void Wordle::load_wordlist(string filename){
     ifstream infile;
     infile.open(filename);
 
@@ -59,7 +78,7 @@ void load_wordlist(vector<string> &wordlist, string filename){
     }
     infile.close();   
 }
-void store_wordlist(const vector<string> &wordlist, string filename){
+void Wordle::store_wordlist(string filename){
     ofstream outfile;
     outfile.open(filename);
 
@@ -71,16 +90,11 @@ void store_wordlist(const vector<string> &wordlist, string filename){
     }
     outfile.close();
 }
-
-struct WordleSolver{
-    vector<string> wordlist; 
-    
-    string nextGuess(int row = 0, const vector<string> &feedback = {}, string userGuess = "TRACE"){
-    if(row == 0){
-        return userGuess;
+string Wordle::nextGuess(){
+    if(guessCount == 0){
+        return "trace";
+        remainingWords = wordlist;
     }
-    
-    vector<string> remainingWords;
 
     // Iterate over each word in the wordlist
     for (const string& word : wordlist) {
@@ -110,25 +124,12 @@ struct WordleSolver{
             remainingWords.push_back(word);
         }
     }
-    wordlist = remainingWords;
-    // Pick a random word from the remainingWords
+    store_wordlist("f_list.txt");
     return remainingWords[0];
+}
+
+void Wordle::play(){
+    while(guessCount < 7){
+        cout <<"worldebot says: " << nextGuess() << endl;
     }
-
-};
-
-
-int main(){
-    vector<string> wordlist;
-    load_wordlist(wordlist, "wordlist.txt");
-    WordleSolver game;
-    game.wordlist = wordlist;
-
-
-    game.nextGuess(1, getFeedback("brace","arbce"), "arbce");
-
-    store_wordlist(game.wordlist, "f_list.txt");
-    
-    
-    return 0;
 }

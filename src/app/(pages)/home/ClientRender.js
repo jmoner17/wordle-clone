@@ -1,5 +1,5 @@
 'use client'
-const nextGuess = require("./solver");
+import nextGuess from "./solver";
 
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
@@ -152,6 +152,7 @@ const ClientComponent = ({ children }) => {
         if (typeof window !== 'undefined') {
             const tmpRoboGuess = localStorage.getItem("roboGuess");
             if (tmpRoboGuess === null) {
+                // Call nextGuess function to get initial guess
                 return nextGuess();
             }
             return JSON.parse(tmpRoboGuess);
@@ -161,6 +162,7 @@ const ClientComponent = ({ children }) => {
     
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            // Store the result of nextGuess in local storage
             localStorage.setItem("roboGuess", JSON.stringify(roboGuess));
         }
     }, [roboGuess]);
@@ -315,8 +317,10 @@ const ClientComponent = ({ children }) => {
                                 newFeedback[row] = data.feedback;
                             }
                             setFeedback(newFeedback);
-                            const nextRoboGuess = nextGuess(row, feedback[row], guess);
-                            setRoboGuess(nextRoboGuess);
+                            if(!isGameOver){
+                                const nextRoboGuess = nextGuess(row, feedback[row], guess);
+                                setRoboGuess(nextRoboGuess);
+                            }
                         } else {
                             setIsActualWord(false);
                         }

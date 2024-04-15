@@ -7,6 +7,7 @@ Wordle::Wordle(string todaysWord){
     targetWord = todaysWord;
     userGuess = "";
     load_wordlist("wordlist.txt");
+    displayWord = userGuess;
 
 }
 string Wordle::displayGuess(){
@@ -22,6 +23,14 @@ string Wordle::displayGuess(){
         i++;
     }
     return tmp;
+}
+string Wordle::getUserGuess(){
+    cout<<endl;
+    cout<<"Enter your guess: ";
+    cin>>userGuess;
+    cout<<endl;
+    return userGuess;
+
 }
 
 vector<string> Wordle::getFeedback() {
@@ -58,7 +67,7 @@ vector<string> Wordle::getFeedback() {
             feedback[i] = "black";
         }
     }
-    
+    displayWord = modTarget;
     return feedback;
 }
 
@@ -85,7 +94,7 @@ void Wordle::store_wordlist(string filename){
     if(!outfile.is_open()){
         printf("error");
     }
-    for(string word : wordlist){
+    for(string word : remainingWords){
         outfile << word << endl;
     }
     outfile.close();
@@ -130,6 +139,14 @@ string Wordle::nextGuess(){
 
 void Wordle::play(){
     while(guessCount < 7){
-        cout <<"worldebot says: " << nextGuess() << endl;
+        cout <<"worldebot says guess this: " << nextGuess() << endl;
+        updateUserGuess(getUserGuess());
+        feedback = getFeedback();
+        cout << displayWord << endl;
+        if(userGuess == targetWord){
+            cout << "You win!" << endl;
+            exit(0);
+        }
+        guessCount++;
     }
 }

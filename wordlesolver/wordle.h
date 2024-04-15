@@ -41,6 +41,7 @@ class Wordle{
         int guessCount;
         std::string targetWord;
         std::string userGuess;
+        std::string displayWord;
         std::vector<std::string> wordlist;
         std::vector<std::string> feedback;
         std::vector<std::string> remainingWords;

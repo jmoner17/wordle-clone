@@ -17,33 +17,33 @@ const nextGuess = (row = 0, feedback = [], guess = 'TRACE') => {
         return guess.toUpperCase();
     } 
     
-    guess = guess.toUpperCase();
+    const user_guess = guess.toLowerCase(); // match json wordlist format
     
     const remainingWords = [];
 
     // Iterate over each word in the wordlist
     for (const word of filteredWordlist) {
         let valid = true;
-
+        
         // Check if the word matches the feedback received
         for (let i = 0; i < feedback.length; i++) {
             // If feedback is green, check if the letter is in the correct position
-            if (feedback[i] === "green" && word[i] !== guess[i]) {
+            if (feedback[i] === "green" && word[i] !== user_guess[i]) {
                 valid = false;
                 break;
             }
             // If feedback is black, check if the letter is in the word
-            if (feedback[i] === "black" && !word.includes(guess[i])) {
+            if (feedback[i] === "black" && word.includes(user_guess[i])) {
                 valid = false;
                 break;
             }
             // If feedback is yellow, exclude words that have the yellow at that spot
-            if (feedback[i] === "yellow" && word[i] === guess[i]) {
+            if (feedback[i] === "yellow" && word[i] === user_guess[i]) {
                 valid = false;
                 break;
             }
             // If feedback is yellow, include words that have a yellow elsewhere
-            if (feedback[i] === "yellow" && word.includes(guess[i])) {
+            if (feedback[i] === "yellow" && !word.includes(user_guess[i])) {
                 valid = false;
                 break;
             }
@@ -57,9 +57,11 @@ const nextGuess = (row = 0, feedback = [], guess = 'TRACE') => {
     filteredWordlist = remainingWords;
 
     // Save filteredWordlist to localStorage
-    localStorage.setItem('filteredWordlist', JSON.stringify(filteredWordlist));
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('filteredWordlist', JSON.stringify(filteredWordlist));
+    }
 
-    // Pick a random word from the remainingWords
+    // Pick first word from the remainingWords
     return filteredWordlist[0] ? filteredWordlist[0].toUpperCase() : "OH NO";
 };
 

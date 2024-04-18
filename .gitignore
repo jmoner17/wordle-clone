@@ -169,3 +169,8 @@ wandb/
 wandb/latest-run/
 wandb-debug.log
 wandb
+
+
+#jest
+/jest-cache/
+coverage/

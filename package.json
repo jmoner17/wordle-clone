@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^1.9.3",
@@ -44,6 +45,7 @@
     "utf-8-validate": "^6.0.3"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "postcss-nesting": "^12.0.2"
   }
 }

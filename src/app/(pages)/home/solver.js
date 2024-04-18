@@ -14,8 +14,6 @@ if (typeof window !== 'undefined') {
 }
 
 
-//! THIS FILTERED WORD LIST IS 100% CHATGPT WRITTEN THIS NEEDS TO BE VERIFIED IF IT IS
-//! ACTUALLY WORKING "efficiently"
 const filterWordlist = async (user_guess, feedback, wordlist) => {
     const remainingWords = [];
     for (const word of wordlist) {

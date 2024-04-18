@@ -4,5 +4,13 @@
     "next": {
       "rootDir": "packages/my-app/"
     }
+  },
+  "env": {
+    "jest": true
+  },
+  "globals": {
+    "it": "readonly",
+    "describe": "readonly",
+    "expect": "readonly"
   }
 }

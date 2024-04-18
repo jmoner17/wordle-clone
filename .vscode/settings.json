@@ -6,7 +6,8 @@
     "Robo",
     "supabase",
     "wandb",
-    "wordle"
+    "wordle",
+    "Wordlist"
   ],
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

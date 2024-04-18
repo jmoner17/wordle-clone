@@ -1,3 +1,5 @@
+'use client'
+
 const { list } = require("./wordlist.json");
 
 const og_list = list;
@@ -11,41 +13,49 @@ if (typeof window !== 'undefined') {
     }
 }
 
-const nextGuess = (row = 0, feedback = [], guess = 'TRACE') => {
-    if (row === 0) {
-        filteredWordlist = og_list;
-        return guess.toUpperCase();
-    } 
-    
-    const user_guess = guess.toLowerCase(); // match json wordlist format
-    
-    const remainingWords = [];
 
-    // Iterate over each word in the wordlist
-    for (const word of filteredWordlist) {
+//! THIS FILTERED WORD LIST IS 100% CHATGPT WRITTEN THIS NEEDS TO BE VERIFIED IF IT IS
+//! ACTUALLY WORKING "efficiently"
+const filterWordlist = async (user_guess, feedback, wordlist) => {
+    const remainingWords = [];
+    for (const word of wordlist) {
         let valid = true;
         
-        // Check if the word matches the feedback received
+        // Create a copy of word to manipulate for yellow condition checks
+        let tempWord = word.split('');
+
         for (let i = 0; i < feedback.length; i++) {
-            // If feedback is green, check if the letter is in the correct position
-            if (feedback[i] === "green" && word[i] !== user_guess[i]) {
+            const char = user_guess[i];
+
+            if (feedback[i] === "green" && word[i] !== char) {
                 valid = false;
                 break;
             }
-            // If feedback is black, check if the letter is in the word
-            if (feedback[i] === "black" && word.includes(user_guess[i])) {
-                valid = false;
-                break;
+            if (feedback[i] === "black") {
+                // Ensure the character does not appear at all in the word
+                if (word.includes(char)) {
+                    const inGuessMoreTimes = user_guess.split(char).length - 1;
+                    const inWordMoreTimes = word.split(char).length - 1;
+                    if (inWordMoreTimes >= inGuessMoreTimes) {
+                        valid = false;
+                        break;
+                    }
+                }
             }
-            // If feedback is yellow, exclude words that have the yellow at that spot
-            if (feedback[i] === "yellow" && word[i] === user_guess[i]) {
-                valid = false;
-                break;
-            }
-            // If feedback is yellow, include words that have a yellow elsewhere
-            if (feedback[i] === "yellow" && !word.includes(user_guess[i])) {
-                valid = false;
-                break;
+            if (feedback[i] === "yellow") {
+                // The character must appear in the word, but not at the same index
+                if (!word.includes(char) || word[i] === char) {
+                    valid = false;
+                    break;
+                }
+                // Remove one occurrence of the character from tempWord to handle multiple yellow cases
+                const idx = tempWord.indexOf(char);
+                if (idx > -1) {
+                    tempWord.splice(idx, 1);
+                } else {
+                    valid = false;
+                    break;
+                }
             }
         }
 
@@ -53,8 +63,17 @@ const nextGuess = (row = 0, feedback = [], guess = 'TRACE') => {
             remainingWords.push(word);
         }
     }
+    return remainingWords;
+};
+
+const nextGuess = async (row = 0, feedback = [], guess = 'TRACE') => {
+    if (row === 0) {
+        filteredWordlist = og_list;
+    } 
     
-    filteredWordlist = remainingWords;
+    const user_guess = guess.toLowerCase(); // match json wordlist format
+    
+    filteredWordlist = await filterWordlist(user_guess, feedback, filteredWordlist);
 
     // Save filteredWordlist to localStorage
     if (typeof window !== 'undefined') {

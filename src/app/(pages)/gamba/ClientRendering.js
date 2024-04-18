@@ -189,7 +189,7 @@ const ClientComponent = ({ children }) => {
         <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
             <div className="flex-grow-0 w-full justify-center">
                 <div className="justify-center flex items-center">
-                    <div class="border rounded my-2 p-2">Current Word: {targetWord}</div>
+                    <div className="border rounded my-2 p-2">Current Word: {targetWord}</div>
                 </div>
                 {letter.map((row, rowIndex) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>

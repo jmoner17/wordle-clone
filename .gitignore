@@ -18,6 +18,27 @@
 /qtools_docs
 /warnings.log
 
+# Doxygen generated files
+doc/
+
+# Doxygen log file
+doxygen.log
+
+# Doxygen XML and tag files
+*.xml
+*.tag
+
+# Doxygen HTML and LaTeX output
+*.html
+*.pdf
+*.tex
+*.aux
+*.idx
+*.ind
+*.log
+*.out
+*.toc
+
 tags
 .cache/
 

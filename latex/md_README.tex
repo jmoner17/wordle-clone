@@ -1,0 +1,98 @@
+This is a \href{https://nextjs.org/}{\texttt{ Next.\+js}} project bootstrapped with \href{https://github.com/vercel/next.js/tree/canary/packages/create-next-app}{\texttt{ {\ttfamily create-\/next-\/app}}}.\hypertarget{md_README_autotoc_md0}{}\doxysection{How to run this project}\label{md_README_autotoc_md0}
+\hypertarget{md_README_autotoc_md1}{}\doxysubsection{1. install npm and node globally.}\label{md_README_autotoc_md1}
+\hypertarget{md_README_autotoc_md2}{}\doxysubsubsection{What do I mean by \char`\"{}you will need npm and node installed globally\char`\"{}?}\label{md_README_autotoc_md2}
+A global installation means that you can run node and npm commands from any terminal session. Without doing this you may run into issues
+
+Even if the account you are using is a privileged user (an account apart of the sudo group) whenever you run any npm task using \char`\"{}sudo\char`\"{} (or any task) this service will run as root and will use images of npm and node that were exclusively installed on the root account. This means any images of npm or node that you have installed on your account will not be used.
+
+To test if this is an issue. You can run both. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{node -\/v}
+\DoxyCodeLine{\# then}
+\DoxyCodeLine{sudo node -\/v}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# or}
+\DoxyCodeLine{}
+\DoxyCodeLine{npm -\/v}
+\DoxyCodeLine{\# then}
+\DoxyCodeLine{sudo npm -\/v}
+\end{DoxyCode}
+
+
+If either of these commands gives you two different versions of npm/node or they don\textquotesingle{}t exist as commands when running these commands as a privileged user. You are very likely to run into issues when using npm and node.\hypertarget{md_README_autotoc_md3}{}\doxysubsubsection{How do I fix this issue?}\label{md_README_autotoc_md3}
+Fixing this issue is very simple all you have to do is run these commands \href{https://deb.nodesource.com/}{\texttt{ here}} in your terminal.
+
+If you get an issue such as\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ trying to overwrite '/usr/include/node/common.gypi', which is also in package libnode-\/dev 12.22.9\string~dfsg-\/1ubuntu3.3}
+\DoxyCodeLine{dpkg-\/deb: error: paste subprocess was killed by signal (Broken pipe)}
+\DoxyCodeLine{Errors were encountered while processing:}
+\DoxyCodeLine{ /var/cache/apt/archives/nodejs\_20.11.0-\/1nodesource1\_amd64.deb}
+\DoxyCodeLine{needrestart is being skipped since dpkg has failed}
+\DoxyCodeLine{E: Sub-\/process /usr/bin/dpkg returned an error code (1)}
+\end{DoxyCode}
+
+
+you will additionally need to run the command\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sudo apt-\/get remove libnode-\/dev}
+\end{DoxyCode}
+
+
+Then retry the nodesource commands once again \href{https://deb.nodesource.com/}{\texttt{ here}}.\hypertarget{md_README_autotoc_md4}{}\doxysubsection{2. Clone this project from Git\+Hub and switch to the proper branch}\label{md_README_autotoc_md4}
+This project exists on a branch that is not on the main and will require you to switch this branch using git.
+
+If you have not yet cloned this repository\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone https://github.com/OU-\/CS3560/s24-\/wordle-\/fibble-\/5}
+\DoxyCodeLine{git checkout next-\/js}
+\end{DoxyCode}
+
+
+If you have already cloned this repository (this includes the main branch as well)\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git fetch}
+\DoxyCodeLine{git checkout next-\/js}
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md5}{}\doxysubsubsection{N\+O\+T\+E\+: D\+O N\+O\+T M\+A\+K\+E E\+D\+I\+T\+S D\+I\+R\+E\+C\+T\+L\+Y T\+O T\+H\+I\+S B\+R\+A\+N\+C\+H. I H\+I\+G\+H\+L\+Y R\+E\+C\+O\+M\+M\+E\+N\+D T\+H\+A\+T Y\+O\+U C\+R\+E\+A\+T\+E Y\+O\+U\+R O\+W\+N B\+R\+A\+N\+C\+H. Y\+O\+U W\+I\+L\+L C\+A\+U\+S\+E M\+A\+N\+Y R\+E\+B\+A\+S\+E I\+S\+S\+U\+E\+S A\+N\+D C\+O\+D\+E C\+O\+N\+F\+L\+I\+C\+T\+S. T\+H\+I\+S I\+S A H\+U\+G\+E P\+A\+I\+N T\+O D\+E\+A\+L W\+I\+T\+H. O\+N\+L\+Y M\+A\+K\+E C\+O\+M\+M\+I\+T\+S D\+I\+R\+E\+C\+T\+L\+Y T\+O T\+H\+I\+S B\+R\+A\+N\+C\+H I\+F Y\+O\+U A\+B\+S\+O\+L\+U\+T\+E\+L\+Y K\+N\+O\+W W\+H\+A\+T Y\+O\+U A\+R\+E D\+O\+I\+N\+G.}\label{md_README_autotoc_md5}
+\hypertarget{md_README_autotoc_md6}{}\doxysubsection{3. Install dependencies locally}\label{md_README_autotoc_md6}
+As this project includes a .gitignore file, temp and build-\/specific files are not included. You will need to install these dependencies on your machine locally.
+
+To do this, run these commands in the root directory of this project\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{npm install -\/g npm-\/check-\/updates}
+\DoxyCodeLine{ncu -\/u}
+\DoxyCodeLine{npm install}
+\end{DoxyCode}
+
+
+If this command does not work you should check your file permissions and ownership. As a last-\/ditch effort you may use \char`\"{}sudo\char`\"{} but this is not recommended.
+
+This command is used to both install and update all dependencies for this project. I have already set up all config files for this project, but I still advise you to understand how these files work. You can find documentation on npm packages \href{https://docs.npmjs.com/}{\texttt{ here}}\hypertarget{md_README_autotoc_md7}{}\doxysubsection{4. Run this project in either dev or production mode.}\label{md_README_autotoc_md7}
+When actively developing this project you can simply run\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{npm run dev}
+\end{DoxyCode}
+
+
+When you want to run this project in a production environment you can run\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{npm run build}
+\DoxyCodeLine{npm run start}
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md8}{}\doxysection{Additional Information below}\label{md_README_autotoc_md8}
+Open \href{http://localhost:3000}{\texttt{ http\+://localhost\+:3000}} with your browser to see the result.
+
+This project uses \href{https://nextjs.org/docs/basic-features/font-optimization}{\texttt{ {\ttfamily next/font}}} to automatically optimize and load Inter, a custom Google Font.\hypertarget{md_README_autotoc_md9}{}\doxysubsection{Learn More}\label{md_README_autotoc_md9}
+To learn more about Next.\+js, take a look at the following resources\+:
+
+
+\begin{DoxyItemize}
+\item \href{https://nextjs.org/docs}{\texttt{ Next.\+js Documentation}} -\/ learn about Next.\+js features and A\+PI.
+\item \href{https://nextjs.org/learn}{\texttt{ Learn Next.\+js}} -\/ an interactive Next.\+js tutorial.
+\end{DoxyItemize}
+
+You can check out \href{https://github.com/vercel/next.js/}{\texttt{ the Next.\+js Git\+Hub repository}} -\/ your feedback and contributions are welcome!\hypertarget{md_README_autotoc_md10}{}\doxysubsection{Deploy on Vercel}\label{md_README_autotoc_md10}
+The easiest way to deploy your Next.\+js app is to use the \href{https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme}{\texttt{ Vercel Platform}} from the creators of Next.\+js.
+
+Check out our \href{https://nextjs.org/docs/deployment}{\texttt{ Next.\+js deployment documentation}} for more details. 

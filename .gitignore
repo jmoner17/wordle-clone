@@ -1,5 +1,33 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+*~
+.*sw?
+\#*
+.DS_Store
 
+*.rej
+*.orig
+
+*.pro
+/packages/rpm/doxygen.spec
+*.idb
+*.pdb
+
+/doxygen_docs
+/doxygen.tag
+/build*
+/qtools_docs
+/warnings.log
+
+tags
+.cache/
+
+.idea
+cmake-build-debug/
+cmake-build-debug-event-trace/
+.vscode/
+
+/examples/html/*
+/examples/latex/*
 # dependencies
 /node_modules
 /.pnp

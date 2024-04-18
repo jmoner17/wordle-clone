@@ -1,4 +1,6 @@
 'use client'
+import nextGuess from "./solver";
+
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useUser } from "@/utils/useClient";
@@ -8,7 +10,7 @@ import debounce from 'lodash.debounce';
 import { addEventListener, removeEventListener } from 'next/app';
 
 const ClientComponent = ({ children }) => {
-   
+
 
     const ROW_SIZE = 6;
     const LETTER_SIZE = 5;
@@ -70,7 +72,7 @@ const ClientComponent = ({ children }) => {
      * @brief this is the letter that is held in each letterbox
      *        A 2D array is created to initialize the entire board
      */
-    const  [letter, setLetter] = useState(() => {
+    const [letter, setLetter] = useState(() => {
         if (typeof window !== 'undefined') {
             const tmpLetter = localStorage.getItem("letter");
             if (tmpLetter == null) {
@@ -145,6 +147,54 @@ const ClientComponent = ({ children }) => {
         }
     }, [isTargetWord]);
 
+    /*
+    const [roboGuess, setRoboGuess] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpRoboGuess = localStorage.getItem("roboGuess");
+            if (tmpRoboGuess === null) {
+                // Call nextGuess function to get initial guess
+                return nextGuess();
+            }
+            return JSON.parse(tmpRoboGuess);
+        }
+        return nextGuess();
+    });
+    
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Store the result of nextGuess in local storage
+            localStorage.setItem("roboGuess", JSON.stringify(roboGuess));
+        }
+    }, [roboGuess]);
+    */
+
+    const [roboGuess, setRoboGuess] = useState('TRACE');
+
+    useEffect(() => {
+        const initializeGuess = async () => {
+            if (typeof window !== 'undefined') {
+                const storedRoboGuess = localStorage.getItem("roboGuess");
+                if (storedRoboGuess !== null) {
+                    setRoboGuess(JSON.parse(storedRoboGuess));
+                } else {
+                    const initialGuess = await nextGuess();
+                    setRoboGuess(initialGuess);
+                    localStorage.setItem("roboGuess", JSON.stringify(initialGuess));
+                }
+            } else {
+                const initialGuess = await nextGuess();
+                setRoboGuess(initialGuess);
+            }
+        };
+
+        initializeGuess();
+    }, []);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("roboGuess", JSON.stringify(roboGuess));
+        }
+    }, [roboGuess]);
 
     /**
     * @var {isGameOver} isGameOver
@@ -189,7 +239,7 @@ const ClientComponent = ({ children }) => {
         }
     }, [gameOverMessage]);
 
-    
+
     /**
      * @var todo
      */
@@ -206,9 +256,9 @@ const ClientComponent = ({ children }) => {
         setFeedback(Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('')));
         setIsTargetWord(null)
         setIsGameOver(false);
+        setRoboGuess('TRACE')
         setError('');
     };
-
 
 
     //handles all keypress events
@@ -285,6 +335,7 @@ const ClientComponent = ({ children }) => {
                                 setIsGameOver(true);
                                 newFeedback[row] = data.feedback;
                                 setFeedback(newFeedback);
+                                setRoboGuess(nextGuess());
                             } else if (data.forceGameOver) {
                                 setGameOverMessage(`You're BAD! Word Was: ${data.targetWord}`);
                                 setIsGameOver(true);
@@ -295,7 +346,10 @@ const ClientComponent = ({ children }) => {
                                 newFeedback[row] = data.feedback;
                             }
                             setFeedback(newFeedback);
-
+                            if (!isGameOver) {
+                                const nextRoboGuess = await nextGuess(row, data.feedback, guess);
+                                setRoboGuess(nextRoboGuess);
+                            }
                         } else {
                             setIsActualWord(false);
                         }
@@ -311,7 +365,7 @@ const ClientComponent = ({ children }) => {
         return () => {
             document.removeEventListener('keydown', keyPressHandler);
         };
-    }, [letter, row, feedback, isGameOver, isActualWord, isTargetWord]);
+    }, [letter, row, feedback, isGameOver, isActualWord, isTargetWord, roboGuess]);
 
 
 
@@ -343,6 +397,12 @@ const ClientComponent = ({ children }) => {
                         ))}
                     </div>
                 ))}
+            </div>
+            <div className="wordle-bot-text">
+                WordleBot Says:
+                <div className="wordle-bot-text-word">
+                    <br />{roboGuess}
+                </div>
             </div>
         </main>
     );

@@ -390,6 +390,42 @@
   margin: 1rem; 
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+.clickers-box:nth-child(1) {
+  top: 12vh;
+}
+
+.clickers-box:nth-child(2) {
+  top: 15vh;
+}
+
+.clickers-box:nth-child(3) {
+  top: 18vh;
+}
+.wordle-bot-text {
+  font-family: consolas;
+  font-size: 18px;
+  position: fixed;
+  top: 10vh;
+  left: 0.5rem; /* Ensures text starts from the left edge */
+  padding: 0.5rem 1rem;
+  border: 1px; 
+  margin: 1rem; 
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-align: left; /* Aligns text to the left */
+}
+.wordle-bot-text-word {
+  font-family: consolas;
+  font-size: 18px;
+  color: #3d9f00;
+  position: fixed;
+  top: 10vh;
+  left: 0.5rem; /* Ensures text starts from the left edge */
+  padding: 0.5rem 1rem;
+  border: 1px; 
+  margin: 1rem; 
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-align: left; /* Aligns text to the left */
+}
 
 .flip {
   animation: flip 500ms ease forwards;

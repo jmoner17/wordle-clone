@@ -1,4 +1,53 @@
-'use client'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>app/(pages)/home/ClientRender.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#feedback">feedback</a></li><li><a href="global.html#getNewTarget">getNewTarget</a></li><li><a href="global.html#isGameOver">isGameOver</a></li><li><a href="global.html#letter">letter</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#row">row</a></li><li><a href="global.html#todo">todo</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">app/(pages)/home/ClientRender.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use client'
 import nextGuess from "./solver";
 
 
@@ -264,12 +313,12 @@ const ClientComponent = ({ children }) => {
 
 
     //handles all keypress events
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    // biome-ignore lint/correctness/useExhaustiveDependencies: &lt;explanation>
     useEffect(() => {
         const keyPressHandler = (e) => {
 
             //if keypress is a non-unicode non-numerical letter then keypress is valid
-            if (e.key.match(/^[a-zA-Z]$/) && e.key.length === 1 && row < ROW_SIZE) {
+            if (e.key.match(/^[a-zA-Z]$/) &amp;&amp; e.key.length === 1 &amp;&amp; row &lt; ROW_SIZE) {
 
                 //this finds letterbox in which to place the letter into
                 const nextIndex = letter[row].findIndex(letter => letter === '');
@@ -281,12 +330,12 @@ const ClientComponent = ({ children }) => {
                     setLetter(newLetter);
 
                     //sets the keystroke to the next letterbox.
-                    const nextFocusIndex = (nextIndex + 1 < LETTER_SIZE) ? nextIndex + 1 : nextIndex;
+                    const nextFocusIndex = (nextIndex + 1 &lt; LETTER_SIZE) ? nextIndex + 1 : nextIndex;
                     refRow.current?.[row][nextFocusIndex].current?.focus();
                 }
             }
             //if backspace is pressed and the row isn't empty, then remove the letter int he currently focused letterbox
-            else if (e.key === 'Backspace' && row < ROW_SIZE) {
+            else if (e.key === 'Backspace' &amp;&amp; row &lt; ROW_SIZE) {
                 //finds the position of the previous letter
                 const prevIndex = letter[row].findLastIndex(letter => letter !== '');
                 if (prevIndex >= 0) {
@@ -297,7 +346,7 @@ const ClientComponent = ({ children }) => {
                 }
             }
             //if enter is pressed, and the game isn't over. proceed with processing the word typed in the current row
-            else if (e.key === 'Enter' && isGameOver === false) {
+            else if (e.key === 'Enter' &amp;&amp; isGameOver === false) {
                 const guess = letter[row].join('');
 
                 /**
@@ -313,7 +362,7 @@ const ClientComponent = ({ children }) => {
                  */
                 const getFeedback = async () => {
                     const publicKey = localStorage.getItem('publicKey');
-                    if (publicKey && guess) {
+                    if (publicKey &amp;&amp; guess) {
                         const response = await fetch('/api/wordle-main-api', {
                             method: 'POST',
                             headers: {
@@ -328,7 +377,7 @@ const ClientComponent = ({ children }) => {
                             const newFeedback = [...feedback];
                             setIsActualWord(true);
                             setRow(row + 1);
-                            if (row < ROW_SIZE - 1) {
+                            if (row &lt; ROW_SIZE - 1) {
                                 refRow.current[row + 1][0].current.focus();
                             }
                             if (data.isTargetWord) {
@@ -372,23 +421,23 @@ const ClientComponent = ({ children }) => {
 
 
     return (
-        <main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
-            <div>{children}</div>
-            {isGameOver && (
-                <GameOver
+        &lt;main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
+            &lt;div>{children}&lt;/div>
+            {isGameOver &amp;&amp; (
+                &lt;GameOver
                     title="Game Over"
                     message={gameOverMessage}
                     show={isGameOver}
                     onClose={resetGame}
                 />
             )}
-            <div className="flex-grow-0 w-full justify-center">
+            &lt;div className="flex-grow-0 w-full justify-center">
                 {letter.map((row, rowIndex) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
-                    <div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
+                    // biome-ignore lint/suspicious/noArrayIndexKey: &lt;needed for wordle functionality>
+                    &lt;div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
                         {row.map((letter, letterIndex) => (
-                            <LetterBox
-                                // biome-ignore lint/suspicious/noArrayIndexKey: <needed for wordle functionality>
+                            &lt;LetterBox
+                                // biome-ignore lint/suspicious/noArrayIndexKey: &lt;needed for wordle functionality>
                                 key={letterIndex}
                                 ref={refRow.current?.[rowIndex]?.[letterIndex]}
                                 letter={letter}
@@ -397,17 +446,44 @@ const ClientComponent = ({ children }) => {
                                 feedback={feedback[rowIndex][letterIndex]}
                             />
                         ))}
-                    </div>
+                    &lt;/div>
                 ))}
-            </div>
-            <div className="wordle-bot-text">
+            &lt;/div>
+            &lt;div className="wordle-bot-text">
                 WordleBot Says:
-                <div className="wordle-bot-text-word">
-                    <br />{roboGuess}
-                </div>
-            </div>
-        </main>
+                &lt;div className="wordle-bot-text-word">
+                    &lt;br />{roboGuess}
+                &lt;/div>
+            &lt;/div>
+        &lt;/main>
     );
 };
 
 export default ClientComponent;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Apr 18 2024 20:50:26 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

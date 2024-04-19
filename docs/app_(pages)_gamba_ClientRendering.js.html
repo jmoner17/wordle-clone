@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>app/(pages)/gamba/ClientRendering.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#feedback">feedback</a></li><li><a href="global.html#getNewTarget">getNewTarget</a></li><li><a href="global.html#isGameOver">isGameOver</a></li><li><a href="global.html#letter">letter</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#row">row</a></li><li><a href="global.html#todo">todo</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">app/(pages)/gamba/ClientRendering.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+import LetterBox from "@/components/LetterBox"; // Adjust the import path if necessary
+import { usePathname } from "next/navigation";
+
+const ClientComponent = ({ children }) => {
+
+    const pathname = usePathname();
+    const ROW_SIZE = 6;
+    const LETTER_SIZE = 5;
+
+    /**
+    * @var {boolean} loading
+    * @brief this will enable or disable the loading animation when needed
+    * todo: need to properly implement this loading function as it currently does nothing
+    */
+    const [loading, setLoading] = useState(true);
+
+    /**
+    * @var {string} error
+    * @brief self explanatory. used to store and print errors.
+    */
+    const [error, setError] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpError = localStorage.getItem(`${pathname}-error`);
+            if (tmpError == null) {
+                return '';
+            }
+            return JSON.parse(tmpError);
+        }
+        return '';
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(`${pathname}-error`, JSON.stringify(error));
+        }
+    }, [error, pathname]);
+
+
+    /**
+     * @var todo
+     */
+    const [targetWord, setTargetWord] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpTargetWord = localStorage.getItem(`${pathname}-targetWord`);
+            if (tmpTargetWord == null) {
+                return '';
+            }
+            return JSON.parse(tmpTargetWord);
+        }
+        return '';
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(`${pathname}-targetWord`, JSON.stringify(targetWord));
+        }
+    }, [targetWord, pathname]);
+
+    /**
+     * @var {feedback} feedback
+     * @brief sets box colors based on wordle rules
+     */
+    const [feedback, setFeedback] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpFeedback = localStorage.getItem(`${pathname}-feedback`);
+            if (tmpFeedback == null) {
+                return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
+            }
+            return JSON.parse(tmpFeedback);
+        }
+        return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill(''));
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(`${pathname}-feedback`, JSON.stringify(feedback));
+        }
+    }, [feedback, pathname]);
+
+    /**
+     * @var {char} letter
+     * @brief this is the letter that is held in each letterbox
+     *        A 2D array is created to initialize the entire board
+     */
+    const [letter, setLetter] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpLetter = localStorage.getItem(`${pathname}-letter`);
+            if (tmpLetter == null) {
+                return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('A'));
+            }
+            return JSON.parse(tmpLetter);
+        }
+        return Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill('A'));
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(`${pathname}-letter`, JSON.stringify(letter));
+        }
+    }, [letter, pathname]);
+
+
+    /**
+    * @var {refRow}
+    * @brief refRow function
+    */
+    const refRow = useRef([]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const rows = Array(ROW_SIZE).fill().map(() => Array(LETTER_SIZE).fill().map(() => React.createRef()));
+            refRow.current = rows;
+        }
+    }, []);
+
+    /**
+     * @var {int} row
+     * @brief stores the the currently focused row. this just means whatever
+     *        row the user is currently making a guess on
+     */
+    const [row, setRow] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const tmpRow = localStorage.getItem(`${pathname}-row`);
+            if (tmpRow == null) {
+                return 0;
+            }
+            return JSON.parse(tmpRow);
+        }
+        return 0;
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(`${pathname}-row`, JSON.stringify(row));
+        }
+    }, [row, pathname]);
+
+
+
+    async function fetchBoard() {
+        setLoading(true);
+        setError('')
+
+        try {
+            const response = await fetch('/api/wordle-gamba-api');
+            if (!response.ok) {
+                throw new Error('Failed to fetch board');
+            }
+            const data = await response.json();
+            setTargetWord(data.targetWord);
+            setLetter(data.board);
+            
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function getFeedback(guess, targetWord) {
+        const mutedTarget = targetWord.split('');
+    
+        const feedback = guess.split('').map((letter, index) => {
+            if (letter.toUpperCase() === targetWord[index].toUpperCase()) {
+                return 'correct';
+            }
+            return null; 
+        });
+    
+        guess.split('').forEach((letter, index) => {
+            if (feedback[index] === null) { 
+                if (mutedTarget.map(l => l.toUpperCase()).includes(letter.toUpperCase())) {
+                    feedback[index] = 'present';
+                } else {
+                    feedback[index] = 'none';
+                }
+            }
+        });
+    
+        return feedback;
+    }
+
+
+
+    return (
+        &lt;main className="gradient-background flex flex-col items-center absolute inset-0 justify-center overflow-auto">
+            &lt;div className="flex-grow-0 w-full justify-center">
+                &lt;div className="justify-center flex items-center">
+                    &lt;div className="border rounded my-2 p-2">Current Word: {targetWord}&lt;/div>
+                &lt;/div>
+                {letter.map((row, rowIndex) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: &lt;needed for wordle functionality>
+                    &lt;div key={rowIndex} className="flex items-center justify-center space-x-4 my-1">
+                        {row.map((letter, letterIndex) => (
+                            &lt;LetterBox
+                                // biome-ignore lint/suspicious/noArrayIndexKey: &lt;needed for wordle functionality>
+                                key={letterIndex}
+                                ref={refRow.current?.[rowIndex]?.[letterIndex]}
+                                letter={letter}
+                                error={error}
+                                index={letterIndex}
+                                feedback={feedback[rowIndex][letterIndex]}
+                            />
+                        ))}
+                    &lt;/div>
+                ))}
+            &lt;/div>
+            {/* biome-ignore lint/a11y/useButtonType: &lt;explanation> */}
+            &lt;button onClick={fetchBoard} className="my-4 p-2 bg-blue-500 text-white rounded">Generate Board&lt;/button>
+        &lt;/main>
+    );
+};
+
+export default ClientComponent;
+
+
+
+
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Apr 18 2024 20:50:26 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

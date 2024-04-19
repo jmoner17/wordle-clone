@@ -63,6 +63,13 @@ const filterWordlist = async (user_guess, feedback, wordlist) => {
     }
     return remainingWords;
 };
+/**
+ * 
+ * @param row - current row
+ * @param feedback - current feedback e.g. ["correct", "correct", "present", "none", "present"]
+ * @param guess - current user guess
+ * @returns 
+ */
 
 const nextGuess = async (row = 0, feedback = [], guess = 'TRACE') => {
     if (row === 0) {

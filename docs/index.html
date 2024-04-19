@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#feedback">feedback</a></li><li><a href="global.html#getNewTarget">getNewTarget</a></li><li><a href="global.html#isGameOver">isGameOver</a></li><li><a href="global.html#letter">letter</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#row">row</a></li><li><a href="global.html#todo">todo</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+    <section class="package">
+        <h3> </h3>		
+    </section>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    <section class="readme usertext">
+        <article><p>This is a <a href="https://nextjs.org/">Next.js</a> project bootstrapped with <a href="https://github.com/vercel/next.js/tree/canary/packages/create-next-app"><code>create-next-app</code></a>.</p>
+<h1>How to run this project</h1>
+<h2>1. install npm and node globally.</h2>
+<h3>What do I mean by &quot;you will need npm and node installed globally&quot;?</h3>
+<p>A global installation means that you can run node and npm commands from any terminal session. Without doing this you may run into issues</p>
+<p>Even if the account you are using is a privileged user (an account apart of the sudo group) whenever you run any npm task using &quot;sudo&quot; (or any task) this service will run as root and will use images of npm and node that were exclusively installed on the root account. This means any images of npm or node that you have installed on your account will not be used.</p>
+<p>To test if this is an issue. You can run both.</p>
+<pre class="prettyprint source lang-bash"><code>node -v
+# then
+sudo node -v
+
+# or
+
+npm -v
+# then
+sudo npm -v
+</code></pre>
+<p>If either of these commands gives you two different versions of npm/node or they don't exist as commands when running these commands as a privileged user. You are very likely to run into issues when using npm and node.</p>
+<h3>How do I fix this issue?</h3>
+<p>Fixing this issue is very simple all you have to do is run these commands <a href="https://deb.nodesource.com/">here</a> in your terminal.</p>
+<p>If you get an issue such as:</p>
+<pre class="prettyprint source lang-bash"><code> trying to overwrite '/usr/include/node/common.gypi', which is also in package libnode-dev 12.22.9~dfsg-1ubuntu3.3
+dpkg-deb: error: paste subprocess was killed by signal (Broken pipe)
+Errors were encountered while processing:
+ /var/cache/apt/archives/nodejs_20.11.0-1nodesource1_amd64.deb
+needrestart is being skipped since dpkg has failed
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+</code></pre>
+<p>you will additionally need to run the command:</p>
+<pre class="prettyprint source lang-bash"><code>sudo apt-get remove libnode-dev
+</code></pre>
+<p>Then retry the nodesource commands once again <a href="https://deb.nodesource.com/">here</a>.</p>
+<h2>2. Clone this project from GitHub and switch to the proper branch</h2>
+<p>This project exists on a branch that is not on the main and will require you to switch this branch using git.</p>
+<p>If you have not yet cloned this repository:</p>
+<pre class="prettyprint source lang-bash"><code>git clone https://github.com/OU-CS3560/s24-wordle-fibble-5
+git checkout next-js
+</code></pre>
+<p>If you have already cloned this repository (this includes the main branch as well):</p>
+<pre class="prettyprint source lang-bash"><code>git fetch
+git checkout next-js
+</code></pre>
+<h3>NOTE: DO NOT MAKE EDITS DIRECTLY TO THIS BRANCH. I HIGHLY RECOMMEND THAT YOU CREATE YOUR OWN BRANCH. YOU WILL CAUSE MANY REBASE ISSUES AND CODE CONFLICTS. THIS IS A HUGE PAIN TO DEAL WITH. ONLY MAKE COMMITS DIRECTLY TO THIS BRANCH IF YOU ABSOLUTELY KNOW WHAT YOU ARE DOING.</h3>
+<h2>3. Install dependencies locally</h2>
+<p>As this project includes a .gitignore file, temp and build-specific files are not included. You will need to install these dependencies on your machine locally.</p>
+<p>To do this, run these commands in the root directory of this project:</p>
+<pre class="prettyprint source lang-bash"><code>npm install -g npm-check-updates
+ncu -u
+npm install
+</code></pre>
+<p>If this command does not work you should check your file permissions and ownership. As a last-ditch effort you may use &quot;sudo&quot; but this is not recommended.</p>
+<p>This command is used to both install and update all dependencies for this project. I have already set up all config files for this project, but I still advise you to understand how these files work. You can find documentation on npm packages <a href="https://docs.npmjs.com/">here</a></p>
+<h2>4. Run this project in either dev or production mode.</h2>
+<p>When actively developing this project you can simply run:</p>
+<pre class="prettyprint source lang-bash"><code>npm run dev
+</code></pre>
+<p>When you want to run this project in a production environment you can run:</p>
+<pre class="prettyprint source lang-bash"><code>npm run build
+npm run start
+</code></pre>
+<h1>Additional Information below</h1>
+<p>Open <a href="http://localhost:3000">http://localhost:3000</a> with your browser to see the result.</p>
+<p>This project uses <a href="https://nextjs.org/docs/basic-features/font-optimization"><code>next/font</code></a> to automatically optimize and load Inter, a custom Google Font.</p>
+<h2>Learn More</h2>
+<p>To learn more about Next.js, take a look at the following resources:</p>
+<ul>
+<li><a href="https://nextjs.org/docs">Next.js Documentation</a> - learn about Next.js features and API.</li>
+<li><a href="https://nextjs.org/learn">Learn Next.js</a> - an interactive Next.js tutorial.</li>
+</ul>
+<p>You can check out <a href="https://github.com/vercel/next.js/">the Next.js GitHub repository</a> - your feedback and contributions are welcome!</p>
+<h2>Deploy on Vercel</h2>
+<p>The easiest way to deploy your Next.js app is to use the <a href="https://vercel.com/new?utm_medium=default-template&amp;filter=next.js&amp;utm_source=create-next-app&amp;utm_campaign=create-next-app-readme">Vercel Platform</a> from the creators of Next.js.</p>
+<p>Check out our <a href="https://nextjs.org/docs/deployment">Next.js deployment documentation</a> for more details.</p></article>
+    </section>
+
+
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            app/(pages)/gamba/layout.jsx
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>layout.jsx</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app_(pages)_gamba_layout.jsx.html">app/(pages)/gamba/layout.jsx</a>, <a href="app_(pages)_gamba_layout.jsx.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+                <div class="description usertext"><p>layout.jsx</p></div>
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            app/(pages)/home/layout.jsx
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>layout.jsx</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app_(pages)_home_layout.jsx.html">app/(pages)/home/layout.jsx</a>, <a href="app_(pages)_home_layout.jsx.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+                <div class="description usertext"><p>layout.jsx</p></div>
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Apr 18 2024 20:50:26 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

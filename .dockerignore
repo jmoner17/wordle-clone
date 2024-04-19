@@ -121,3 +121,7 @@ wandb
 coverage/
 tests/
 jest.config.js
+
+#jsdoc
+jsdoc.json
+docs/

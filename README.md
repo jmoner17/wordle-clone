@@ -1,4 +1,16 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Team-wordle-fibble-5  
+
+Wordle Clone & Solver + Some Other Fun Pages!
+
+## Team Information
+
+**Team ID:** s24-wordle-fibble-5  
+**Problem/Project name:** WordleMaxxers \
+**Team Name:**  wordle-fibble-5  
+**Members (3):**  
+- Joshua Moner ([Email](jm170321@ohio.edu), [Github](github.com/jmoner17))
+- Izaak White   ([Email](ww655421@ohio.edu), [Github](github.com/izaakwhite))
+- Matt Taylor   ([Email](mt939121@ohio.edu), [Github](github.com/MTaylor03))
 
 # How to run this project
 

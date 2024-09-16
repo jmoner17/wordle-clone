@@ -3,6 +3,7 @@
 # Set environment variables for CodeQL paths and results folder
 export CODEQL_SUITES_PATH="$HOME/3560/codeql-repo/javascript/ql/src/codeql-suites"
 export RESULTS_FOLDER="codeql-results"
+export PATH=$PATH:$HOME/3560/codeql
 
 # Create a directory for storing results if it does not exist
 mkdir -p "$RESULTS_FOLDER"

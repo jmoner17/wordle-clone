@@ -63,7 +63,7 @@ This project exists on a branch that is not on the main and will require you to 
 
 If you have not yet cloned this repository:
 ```bash
-git clone https://github.com/OU-CS3560/s24-wordle-fibble-5
+git clone https://github.com/jmoner17/wordle-clone
 git checkout next-js
 ```
 

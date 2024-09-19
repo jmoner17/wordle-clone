@@ -30,21 +30,3 @@ jobs:
             NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
             NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
             NEXT_PRIVATE_SUPABASE_SERVICE_KEY=${{ secrets.NEXT_PRIVATE_SUPABASE_SERVICE_KEY }}
-
-  build-and-run-nginx-net5:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and Load Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./nginx
-          file: ./nginx/Dockerfile
-          load: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/nginx-net5:latest

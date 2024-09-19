@@ -1,4 +1,4 @@
-FROM node:21-alpine AS base
+FROM node:alpine AS base
 
 # Step 1: Install dependencies and build the Next.js project
 WORKDIR /app

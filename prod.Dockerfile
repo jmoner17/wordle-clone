@@ -1,6 +1,8 @@
 FROM node:alpine AS base
 
 # Step 1: Install dependencies and build the Next.js project
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
 
 # Copy package management files and install dependencies
